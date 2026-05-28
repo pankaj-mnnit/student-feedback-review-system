@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Feedback Review System - Student Feedback Platform</title>
+    <meta name="description"
+        content="A simple platform for students to share anonymous feedback about their courses and teachers.">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Flaticon UIcons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-chubby/css/uicons-solid-chubby.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-straight/css/uicons-solid-straight.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=28">
+</head>
+
+<body>
+
+    <!-- ============================================================ -->
+    <!--  NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    <nav class="navbar navbar-expand-lg sticky-top" id="main-navbar">
+        <div class="container navbar-container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
+                <i class="fi fi-sr-star-of-david me-2 text-primary logo-icon"></i>
+                <span class="brand-text">
+                    FEEDBACK <span class="text-primary">REVIEW</span> SYSTEM
+                </span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('feedback.submit_feedback') }}">Feedback</a>
+                    </li>
+                    {% if session.get('user_id') %}
+                    <li class="nav-item">
+                        <a href="{% if session.get('role') == 'admin' %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('admin.teacher_dashboard') }}{% endif %}" class="btn-pill-login">
+                            <i class="fi fi-sr-layout-fluid"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.logout') }}" class="btn-pill-logout">
+                            <i class="fi fi-br-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" class="btn-pill-login" id="open-login-modal">
+                            <i class="fi fi-sr-user"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages (Success/Error Alerts) -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+            {% if category == 'success' %}
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {% elif category == 'danger' %}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% else %}
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <main>
+        <!-- ====================================================================== -->
+        <!--  HERO SECTION                                                         -->
+        <!-- ====================================================================== -->
+        <section class="hero-section" id="hero">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <!-- Left - Text -->
+                    <div class="col-lg-6 hero-content-column">
+                        <div class="reveal">
+                            <span class="hero-badge-ai">
+                                <i class="fas fa-wand-magic-sparkles me-2"></i>
+                                <span>AI-Powered Feedback Analytics</span>
+                            </span>
+                        </div>
+
+                        <h1 class="hero-title-ai reveal">
+                            <span class="gradient-text">Smarter</span> Student Feedback for
+                            <span class="gradient-text">Better Education</span>
+                        </h1>
+
+                        <p class="hero-description-ai reveal">
+                            Collect, analyze and visualize student feedback in real-time.
+                            Powered by AI sentiment analysis to turn every comment into actionable insight.
+                        </p>
+
+                        <div class="hero-cta-wrapper reveal">
+                            <a href="{{ url_for('feedback.submit_feedback') }}" class="btn-ai-primary">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                <span>Submit Your Feedback</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right - Symmetrical Circular Node visual -->
+                    <div class="col-lg-6 hero-visual-column">
+                        <div class="modern-ai-wrapper">
+                            <div class="modern-ai-container reveal">
+                                <!-- Background Elements -->
+                                <div class="visual-background-glow"></div>
+
+                                <!-- Central Brain Core -->
+                                <div class="main-core-wrap">
+                                    <div class="main-core">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <div class="core-rings">
+                                        <div class="ring-solid"></div>
+                                        <div class="ring-dashed"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Connectors (SVG) -->
+                                <svg class="visual-connectors" width="100%" height="100%" viewBox="0 0 500 500">
+                                    <!-- Curved flowing lines connecting perfectly to the larger circular nodes -->
+                                    <path d="M 445 250 C 370 250, 310 250, 250 250" class="path-line gray" />
+                                    <path d="M 371 402 C 320 350, 290 300, 250 250" class="path-line red" />
+                                    <path d="M 153 440 C 170 350, 210 300, 250 250" class="path-line blue" />
+                                    <path d="M 74 335 C 130 310, 190 280, 250 250" class="path-line gray" />
+                                    <path d="M 38 165 C 100 190, 180 220, 250 250" class="path-line green" />
+                                    <path d="M 207 60 C 200 150, 230 200, 250 250" class="path-line gray" />
+                                    <path d="M 371 98 C 320 150, 290 200, 250 250" class="path-line green" />
+                                </svg>
+
+                                <!-- Left: Feature Tags (Pills) -->
+                                <div class="feature-tag-pill tag-ai">
+                                    <div class="tag-circle green">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <span class="tag-label">AI Sentiment</span>
+                                </div>
+
+                                <div class="feature-tag-pill tag-anon">
+                                    <div class="tag-circle blue">
+                                        <i class="fas fa-shield-halved"></i>
+                                    </div>
+                                    <span class="tag-label">100% Anonymous</span>
+                                </div>
+
+                                <!-- Sentiment Nodes (Right) -->
+                                <div class="node-circle node-pos">
+                                    <i class="fas fa-face-smile"></i>
+                                </div>
+
+                                <div class="node-circle node-neu">
+                                    <i class="fas fa-face-meh"></i>
+                                </div>
+
+                                <div class="node-circle node-neg">
+                                    <i class="fas fa-face-frown"></i>
+                                </div>
+
+                                <!-- Utility Nodes (Left) -->
+                                <div class="node-circle node-chat">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                                <div class="node-circle node-list">
+                                    <i class="fas fa-align-left"></i>
+                                </div>
+
+                                <!-- Radar Ripples -->
+                                <div class="radar-ripple ripple-1"></div>
+                                <div class="radar-ripple ripple-2"></div>
+                                <div class="radar-ripple ripple-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================== -->
+        <!--  HOW IT WORKS SECTION                                                  -->
+        <!-- ====================================================================== -->
+        <section class="features-section" id="features">
+            <div class="container">
+
+                <div class="text-center mb-5 reveal">
+                    <span class="section-badge">
+                        <i class="fa-solid fa-layer-group me-2" style="font-size: 13px; vertical-align: middle;"></i>Features
+                    </span>
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle mx-auto">
+                        Giving feedback is quick, anonymous, and useful for improving the learning experience.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card reveal">
+                            <div class="feature-icon-box">
+                                <i class="fa-solid fa-file-pen"></i>
+                            </div>
+                            <h5>Simple to Fill</h5>
+                            <p>Pick your subject and teacher, give a rating, and share your thoughts in seconds.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card reveal">
+                            <div class="feature-icon-box">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <h5>Completely Anonymous</h5>
+                            <p>Your name is never attached to your feedback, so you can be honest without worrying.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card reveal">
+                            <div class="feature-icon-box">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h5>Takes Under a Minute</h5>
+                            <p>No long forms or sign-ups. Open the page, fill in your thoughts, and submit.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="feature-card reveal">
+                            <div class="feature-icon-box">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            </div>
+                            <h5>Makes a Difference</h5>
+                            <p>Teachers and administrators can review feedback and improve the classroom experience.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ====================================================================== -->
+        <!--  ABOUT SECTION                                                        -->
+        <!-- ====================================================================== -->
+        <section class="about-section" id="about">
+            <div class="container">
+                <div class="row align-items-center g-5">
+
+                    <!-- Left - Visual Cards -->
+                    <div class="col-lg-5">
+                        <div class="about-visual-container reveal">
+                            <div class="about-visual-glow"></div>
+
+                            <div class="about-visual-card">
+                                <div class="about-visual-icon">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                </div>
+                                <span>Student Friendly</span>
+                            </div>
+
+                            <div class="about-visual-card">
+                                <div class="about-visual-icon">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                </div>
+                                <span>Anonymous Feedback</span>
+                            </div>
+
+                            <div class="about-visual-card">
+                                <div class="about-visual-icon">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </div>
+                                <span>Insightful Reports</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right - Content -->
+                    <div class="col-lg-7">
+                        <div class="reveal">
+                            <span class="section-badge">
+                                <i class="fa-solid fa-circle-info me-2" style="font-size: 13px; vertical-align: middle;"></i>About
+                            </span>
+                            <h2 class="section-title">About This Project</h2>
+                            <p class="about-text">
+                                This Feedback Review System was built as a college minor project to give students a
+                                simple way
+                                to share their thoughts about courses and teaching.
+                            </p>
+                            <p class="about-text">
+                                The platform allows students to submit anonymous feedback, while teachers and
+                                administrators can
+                                review useful insights to improve the learning experience.
+                            </p>
+                            <p class="about-text mb-0">
+                                No sign-up is needed for students. They can open the feedback form, select the subject
+                                and
+                                teacher, rate the experience, and submit their comments.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compact CTA Card below About Content -->
+                <div class="about-cta-card reveal">
+                    <div class="cta-content">
+                        <h2 class="cta-title">Your Opinion Matters</h2>
+                        <p class="cta-text">
+                            A small piece of honest feedback can help create a better learning experience for you and
+                            your
+                            classmates.
+                        </p>
+                    </div>
+                    <div class="cta-action">
+                        <a href="{{ url_for('feedback.submit_feedback') }}" class="btn-about-cta">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Give Your Feedback</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ====================================================================== -->
+    <!--  FOOTER                                                                -->
+    <!-- ====================================================================== -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
+                <i class="fi fi-sr-star-of-david me-2 text-primary logo-icon"></i>
+                <span class="brand-text">
+                    Feedback <span class="text-primary">Review</span> System
+                </span>
+            </a>
+            <!-- Copyright -->
+            <p class="copyright-text">© 2026 Feedback Review System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!--  LOGIN MODAL                                              -->
+    <!-- ============================================================ -->
+    <div id="login-modal-overlay" class="modal-overlay">
+        <div class="login-modal-card">
+            <button id="close-login-modal" class="modal-close-btn" aria-label="Close Modal">
+                <i class="fa-solid fa-xmark icon-thin"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back!</h2>
+                <p class="modal-subtitle">Sign in to manage feedback, review insights, and improve the learning
+                    experience.</p>
+            </div>
+
+            <form id="login-form" class="modal-form">
+                <div class="form-group">
+                    <label for="login-username" class="form-label">User ID</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-circle-user input-icon"></i>
+                        <input type="text" id="login-username" name="user_id" placeholder="Enter your user ID" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password"
+                            required>
+                        <button type="button" id="toggle-password" class="password-toggle-btn">
+                            <span class="password-toggle-icon-wrapper">
+                                <i class="fa-regular fa-eye icon-sm"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error-message" class="modal-error-msg" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation icon-xs me-2"></i>
+                    <span>Invalid credentials. Please try again.</span>
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="modal-submit-btn">
+                    <span>Sign In</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=3"></script>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+
+</html>

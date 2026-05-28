@@ -1,0 +1,396 @@
+{% extends "admin/base.html" %} {% block admin_page_title %}My Insights - {{
+teacher.name }}{% endblock %} {% block admin_title %}My Insights{% endblock %}
+{% block admin_subtitle %}Here is a comprehensive analysis of your teaching
+performance and student reviews.{% endblock %} {% block admin_content %}
+<!-- ── Assigned Subjects Full-Width Card (Designed for multiple subjects) ── -->
+<div
+  class="card border-0 shadow-sm rounded-4 mb-4"
+  style="
+    background: #ffffff;
+    border: 1px solid rgba(62, 94, 215, 0.08) !important;
+  "
+>
+  <div class="card-body p-4">
+    <div
+      class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-4"
+    >
+      <div class="d-flex align-items-center gap-3">
+        <div class="card-icon-wrapper icon-primary">
+          <i class="fi fi-br-book-open-cover"></i>
+        </div>
+        <div>
+          <h5
+            class="fw-bold mb-1"
+            style="
+              color: var(--text-primary);
+              font-family: &quot;Poppins&quot;, sans-serif;
+            "
+          >
+            Your Assigned Subjects
+          </h5>
+          <p
+            class="text-muted mb-0"
+            style="
+              font-size: 0.88rem;
+              font-family: &quot;Poppins&quot;, sans-serif;
+            "
+          >
+            You are registered to receive feedback for the following assigned
+            subjects.
+          </p>
+        </div>
+      </div>
+      <div
+        class="d-flex flex-wrap gap-2 align-items-center"
+        style="max-width: 100%"
+      >
+        {% if teacher.subjects %} {% for sub in teacher.subjects %}
+        <div
+          class="d-flex align-items-center gap-2 px-3 py-2 rounded-3"
+          style="
+            background: rgba(62, 94, 215, 0.06);
+            border: 1px solid rgba(62, 94, 215, 0.15);
+            font-family: &quot;Poppins&quot;, sans-serif;
+            transition: all 0.2s ease;
+          "
+          onmouseover="
+            this.style.background = 'rgba(62, 94, 215, 0.1)';
+            this.style.borderColor = 'var(--primary)';
+          "
+          onmouseout="
+            this.style.background = 'rgba(62, 94, 215, 0.06)';
+            this.style.borderColor = 'rgba(62, 94, 215, 0.15)';
+          "
+        >
+          <span class="fw-bold text-dark" style="font-size: 0.88rem"
+            >{{ sub }}</span
+          >
+        </div>
+        {% endfor %} {% else %}
+        <span class="text-muted" style="font-size: 0.88rem"
+          >No subjects currently assigned.</span
+        >
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Metric Cards ── -->
+<div class="db-metrics-grid">
+  <!-- Total Feedbacks -->
+  <div class="db-metric-card">
+    <span class="db-metric-label">TOTAL FEEDBACK</span>
+    <div class="db-metric-row">
+      <div class="db-metric-icon">
+        <i class="fi fi-br-comment-alt"></i>
+      </div>
+      <span class="db-metric-value">{{ total_feedbacks }}</span>
+    </div>
+  </div>
+
+  <!-- Average Rating -->
+  <div class="db-metric-card">
+    <span class="db-metric-label">AVERAGE RATING</span>
+    <div class="db-metric-row">
+      <div class="db-metric-icon">
+        <i class="fi fi-br-star"></i>
+      </div>
+      <span class="db-metric-value">{{ avg_rating }}</span>
+    </div>
+  </div>
+
+  <!-- Positive Feedbacks -->
+  <div class="db-metric-card">
+    <span class="db-metric-label">POSITIVE REVIEWS</span>
+    <div class="db-metric-row">
+      <div class="db-metric-icon">
+        <i class="fa-solid fa-face-smile"></i>
+      </div>
+      <span class="db-metric-value">{{ pos }}</span>
+    </div>
+  </div>
+
+  <!-- Negative Reviews -->
+  <div class="db-metric-card">
+    <span class="db-metric-label">NEGATIVE REVIEWS</span>
+    <div class="db-metric-row">
+      <div class="db-metric-icon" style="background: rgba(239,68,68,0.1); color: var(--danger);">
+        <i class="fa-solid fa-face-frown"></i>
+      </div>
+      <span class="db-metric-value" style="color: var(--danger);">{{ neg }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Chart Cards ── -->
+<div class="db-charts-row">
+  <!-- Chart 1: Sentiment Overview -->
+  <div class="db-chart-card">
+    <div class="db-chart-card__header">
+      <div>
+        <h3 class="db-chart-title">Sentiment Overview</h3>
+        <p class="db-chart-desc">
+          Quick view of positive, neutral, and negative feedback trends.
+        </p>
+      </div>
+    </div>
+    <div class="db-chart-card__body">
+      {% if pos > 0 or neu > 0 or neg > 0 %}
+      <!-- Sentiment Stat Chips -->
+      <div class="db-sentiment-chips">
+        <div class="db-sentiment-chip db-sentiment-chip--pos">
+          <span class="db-sentiment-chip__num">{{ pos }}</span>
+          <span class="db-sentiment-chip__lbl">Positive</span>
+        </div>
+        <div class="db-sentiment-chip db-sentiment-chip--neu">
+          <span class="db-sentiment-chip__num">{{ neu }}</span>
+          <span class="db-sentiment-chip__lbl">Neutral</span>
+        </div>
+        <div class="db-sentiment-chip db-sentiment-chip--neg">
+          <span class="db-sentiment-chip__num">{{ neg }}</span>
+          <span class="db-sentiment-chip__lbl">Negative</span>
+        </div>
+      </div>
+      <!-- Doughnut Chart -->
+      <div class="db-chart-canvas-wrap">
+        <canvas id="teacherSentimentChart"></canvas>
+      </div>
+      {% else %}
+      <div class="db-chart-empty">
+        <i class="fi fi-br-chart-pie-alt db-chart-empty__icon"></i>
+        <p>Sentiment data is not available yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Chart 2: Rating Distribution -->
+  <div class="db-chart-card">
+    <div class="db-chart-card__header">
+      <div>
+        <h3 class="db-chart-title">Rating Distribution</h3>
+        <p class="db-chart-desc">
+          See how students rated their learning experience.
+        </p>
+      </div>
+    </div>
+    <div class="db-chart-card__body">
+      {% set total_rated = chart_rating_counts | sum %} {% if total_rated > 0 %}
+      <div class="db-rating-bars">
+        {% for idx in range(5) %} {% set count = chart_rating_counts[idx] %} {%
+        set pct = ((count / total_rated) * 100) | round(1) %} {% set star_num =
+        5 - idx %}
+        <div class="db-rating-row" data-pct="{{ pct }}">
+          <div class="db-rating-label">
+            <span class="db-rating-badge db-rating-badge--{{ star_num }}"
+              >{{ star_num }} <i class="bi bi-star-fill"></i
+            ></span>
+          </div>
+          <div class="db-rating-track-wrapper">
+            <div class="db-rating-track">
+              <div
+                class="db-rating-fill db-rating-fill--{{ star_num }}"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+          <div class="db-rating-info">
+            <span class="db-rating-pct">{{ pct }}%</span>
+            <span class="db-rating-count">({{ count }})</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="db-chart-empty">
+        <i class="fi fi-br-star db-chart-empty__icon"></i>
+        <p>No rating data available yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ── Recent Feedback Table ── -->
+<div class="db-table-card">
+  <div class="db-table-card__header">
+    <div>
+      <h3 class="db-chart-title">Recent Feedback</h3>
+      <p class="db-chart-desc">
+        Latest student reviews and comments for your classes.
+      </p>
+    </div>
+    <a
+      href="{{ url_for('admin.teacher_feedbacks') }}"
+      class="db-view-all-btn text-decoration-none"
+    >
+      View All Feedback
+    </a>
+  </div>
+  <div class="db-table-card__body">
+    {% if feedbacks %}
+    <div class="db-table-wrap">
+      <table class="db-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <th>Rating</th>
+            <th>Feedback</th>
+            <th>Sentiment</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in feedbacks %}
+          <tr>
+            <td class="db-table__date">{{ item.date }}</td>
+            <td class="db-table__subject">
+              {{ item.subject_name if item.subject_name else item.subject }}
+            </td>
+            <td>
+              <span
+                class="db-rating-badge db-rating-badge--{{ item.rating_star }}"
+                >{{ item.rating_star }} <i class="bi bi-star-fill"></i
+              ></span>
+            </td>
+            <td class="db-table__review">
+              {{ item.feedback_comment if item.feedback_comment else '-' }}
+            </td>
+            <td>
+              {% if item.sentiment_analysis == 'positive' %}
+              <span class="db-sentiment-badge db-sentiment-badge--pos">
+                Positive
+              </span>
+              {% elif item.sentiment_analysis == 'negative' %}
+              <span class="db-sentiment-badge db-sentiment-badge--neg">
+                Negative
+              </span>
+              {% else %}
+              <span class="db-sentiment-badge db-sentiment-badge--neu">
+                Neutral
+              </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="db-table-empty">
+      <i class="fi fi-br-messages db-chart-empty__icon"></i>
+      <p>No feedback has been submitted yet.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %} {% block admin_extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      // Sentiment doughnut chart
+      const ctxTeacherSentiment = document.getElementById('teacherSentimentChart');
+      if (ctxTeacherSentiment) {
+          const ctx = ctxTeacherSentiment.getContext('2d');
+
+          // Gradients
+          const gradPos = ctx.createLinearGradient(0, 0, 0, 200);
+          gradPos.addColorStop(0, '#34d399');
+          gradPos.addColorStop(1, '#10b981');
+
+          const gradNeu = ctx.createLinearGradient(0, 0, 0, 200);
+          gradNeu.addColorStop(0, '#fbbf24');
+          gradNeu.addColorStop(1, '#f59e0b');
+
+          const gradNeg = ctx.createLinearGradient(0, 0, 0, 200);
+          gradNeg.addColorStop(0, '#fb7185');
+          gradNeg.addColorStop(1, '#f43f5e');
+
+          const posVal = {{ pos }};
+          const neuVal = {{ neu }};
+          const negVal = {{ neg }};
+          const total = posVal + neuVal + negVal;
+          const posPct = total > 0 ? Math.round((posVal / total) * 100) : 0;
+
+          new Chart(ctx, {
+              type: 'doughnut',
+              data: {
+                  labels: ['Positive', 'Neutral', 'Negative'],
+                  datasets: [{
+                      data: [posVal, neuVal, negVal],
+                      backgroundColor: [gradPos, gradNeu, gradNeg],
+                      borderWidth: 0,
+                      hoverOffset: 6
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  cutout: '75%',
+                  layout: {
+                      padding: {
+                          top: 10,
+                          bottom: 10,
+                          left: 30,
+                          right: 30
+                      }
+                  },
+                  plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                          backgroundColor: '#18181b',
+                          titleFont: { family: 'Poppins', size: 12 },
+                          bodyFont: { family: 'Poppins', size: 12 },
+                          padding: 10,
+                          cornerRadius: 8,
+                          displayColors: false
+                      }
+                  }
+              },
+              plugins: [{
+                  id: 'centerText',
+                  afterDraw(chart) {
+                      const { width, height, ctx } = chart;
+                      ctx.save();
+
+                      const meta = chart.getDatasetMeta(0);
+                      const hasCoords = meta && meta.data && meta.data[0] && typeof meta.data[0].x === 'number' && !isNaN(meta.data[0].x);
+                      const centerX = hasCoords ? meta.data[0].x : width / 2;
+                      const centerY = hasCoords ? meta.data[0].y : height / 2;
+
+                      const fontSizePercent = (height / 160).toFixed(2);
+                      ctx.font = `bold ${fontSizePercent}em Poppins`;
+                      ctx.textBaseline = 'middle';
+                      ctx.textAlign = 'center';
+                      ctx.fillStyle = '#09090b';
+
+                      const textPercent = posPct + "%";
+                      ctx.fillText(textPercent, centerX, centerY - 8);
+
+                      const fontSizeSub = (height / 270).toFixed(2);
+                      ctx.font = `600 ${fontSizeSub}em Poppins`;
+                      ctx.fillStyle = '#71717a';
+                      ctx.textAlign = 'center';
+
+                      const textSub = "Positive";
+                      ctx.fillText(textSub, centerX, centerY + 14);
+                      ctx.restore();
+                  }
+              }]
+          });
+      }
+
+      // Spring-loaded Progress animation
+      document.querySelectorAll('.db-rating-fill').forEach(function (bar) {
+          setTimeout(function() {
+              const row = bar.closest('.db-rating-row');
+              if (row) {
+                  const pct = row.getAttribute('data-pct') || 0;
+                  bar.style.width = pct + '%';
+              }
+          }, 150);
+      });
+  });
+</script>
+{% endblock %}

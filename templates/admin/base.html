@@ -1,0 +1,523 @@
+{% extends "base.html" %}
+
+{% block title %}{% block admin_page_title %}Admin Portal{% endblock %} - Feedback Review System{% endblock %}
+
+{% block extra_head %}
+<script>
+    // Apply collapsed class immediately to documentElement to prevent layout shift / flash
+    // Only on large desktop (>1200px) — at ≤1200px, CSS forces icon-only automatically
+    if (window.innerWidth > 1200 && localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+    }
+</script>
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block flash_messages %}{% endblock %}
+
+
+{% block content %}
+<!-- Mobile Sidebar Overlay -->
+<div class="sidebar-mobile-overlay" id="sidebar-mobile-overlay"></div>
+<div class="container-fluid p-0 admin-dashboard-container">
+    <div class="row g-0">
+
+        <!-- ============================================================ -->
+        <!--  LEFT SIDEBAR NAVIGATION (POLISHED SaaS STYLE)               -->
+        <!-- ============================================================ -->
+        <div class="admin-sidebar d-flex flex-column">
+
+            <!-- Sidebar Brand Header -->
+            <div class="sidebar-brand px-4 d-flex align-items-center justify-content-between">
+                <a href="{% if session.get('role') == 'admin' %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('admin.teacher_dashboard') }}{% endif %}" class="d-flex align-items-center text-decoration-none">
+                    <i class="fi fi-sr-star-of-david logo-icon"
+                        style="font-size: 2.25rem; color: var(--primary) !important;"></i>
+                </a>
+                <button type="button" class="btn-sidebar-close" id="sidebar-close-btn" title="Toggle Sidebar">
+                    <i class="fi fi-br-sidebar"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar Nav Links -->
+            <div class="px-3 py-4 flex-grow-1">
+                <ul class="nav flex-column w-100" id="sidebar-menu">
+                    {% if session.get('role') == 'admin' %}
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.dashboard') }}"
+                            class="sidebar-nav-link sidebar-menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-layout-fluid"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.feedbacks') }}"
+                            class="sidebar-nav-link sidebar-menu-item {% if active_page == 'feedbacks' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-messages"></i>
+                            <span class="menu-text">Feedbacks</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.teachers') }}"
+                            class="sidebar-nav-link sidebar-menu-item {% if active_page == 'teachers' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-users"></i>
+                            <span class="menu-text">Teachers</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.subjects') }}"
+                            class="sidebar-nav-link sidebar-menu-item {% if active_page == 'subjects' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-book-open-cover"></i>
+                            <span class="menu-text">Subjects</span>
+                        </a>
+                    </li>
+                    {% if session.get('user_id') == 'ADM001' %}
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.admins') }}"
+                            class="sidebar-nav-link sidebar-menu-item {% if active_page == 'admins' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-shield-check"></i>
+                            <span class="menu-text">Admins</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+
+                    {% if session.get('user_id') and not session.get('user_id').upper().startswith('ADM') %}
+                    {% if session.get('role') == 'admin' %}
+                    <li class="sidebar-divider"></li>
+                    {% endif %}
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.teacher_dashboard') }}" class="sidebar-nav-link sidebar-menu-item {% if active_page == 'teacher_dashboard' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-stats"></i>
+                            <span class="menu-text">My Insights</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-1">
+                        <a href="{{ url_for('admin.teacher_feedbacks') }}" class="sidebar-nav-link sidebar-menu-item {% if active_page == 'teacher_feedbacks' %}active{% endif %}">
+                            <i class="sidebar-menu-icon fi fi-br-messages"></i>
+                            <span class="menu-text">My Feedbacks</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Sidebar Bottom Footer -->
+            <div class="px-3 py-4 sidebar-footer d-flex flex-column gap-3">
+                <!-- Log Out Button -->
+                <a href="{{ url_for('admin.logout') }}"
+                    class="sidebar-nav-link sidebar-menu-item sidebar-nav-link-logout">
+                    <i class="sidebar-menu-icon fi fi-br-sign-out-alt"></i>
+                    <span class="menu-text">Log Out</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!--  RIGHT MAIN CONTENT AREA (CLEAN WHITE SaaS STYLE)            -->
+        <!-- ============================================================ -->
+        <div class="main-content-wrapper d-flex flex-column">
+
+            <!-- Top Navbar -->
+            <div class="admin-topbar d-flex align-items-center justify-content-between px-4"
+                style="z-index: 100; flex-shrink: 0;">
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Mobile Hamburger -->
+                    <button type="button" class="btn-mobile-menu" id="mobile-menu-btn" title="Open Menu">
+                        <i class="fi fi-br-menu-burger" style="display:flex;align-items:center;"></i>
+                    </button>
+                    <span
+                        style="font-size: 1.1rem; font-weight: 500; color: var(--text-secondary); font-family: 'Poppins', sans-serif;">
+                        Hello, <span style="font-weight: 700; color: var(--text-primary);">{{ session.get('user_name')
+                            }}</span>
+                    </span>
+                    {% if session.get('role') == 'admin' %}
+                    <span class="d-inline-flex align-items-center justify-content-center"
+                        style="font-size: 0.78rem; font-weight: 600; background: linear-gradient(135deg, rgba(62, 94, 215, 0.08), rgba(62, 94, 215, 0.15)); color: var(--primary); border: 1px solid rgba(62, 94, 215, 0.25); padding: 5px 14px; border-radius: 50px; font-family: 'Poppins', sans-serif; line-height: 1.1; letter-spacing: 0.2px;">
+                        <i class="fas fa-user-shield" style="font-size: 0.75rem; margin-right: 5px;"></i>Admin
+                    </span>
+                    {% else %}
+                    <span class="d-inline-flex align-items-center justify-content-center"
+                        style="font-size: 0.78rem; font-weight: 600; background: linear-gradient(135deg, rgba(62, 94, 215, 0.08), rgba(62, 94, 215, 0.15)); color: var(--primary); border: 1px solid rgba(62, 94, 215, 0.25); padding: 5px 14px; border-radius: 50px; font-family: 'Poppins', sans-serif; line-height: 1.1; letter-spacing: 0.2px;">
+                        <i class="fas fa-chalkboard-teacher" style="font-size: 0.75rem; margin-right: 5px;"></i>Teacher
+                    </span>
+                    {% endif %}
+                </div>
+                <div class="d-flex align-items-center gap-3 position-relative">
+                    <a href="{{ url_for('admin.profile') }}" class="text-decoration-none" title="View Profile">
+                        <div class="user-avatar-circle d-flex align-items-center justify-content-center shadow-sm"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--purple-accent)); color: #fff; font-weight: 700; font-size: 1.15rem; font-family: 'Poppins', sans-serif; text-transform: uppercase; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; box-shadow: 0 4px 10px rgba(62, 94, 215, 0.2);"
+                            onmouseover="this.style.transform='scale(1.08) translateY(-2px)'; this.style.boxShadow='0 8px 16px rgba(62, 94, 215, 0.3)';"
+                            onmouseout="this.style.transform='scale(1) translateY(0)'; this.style.boxShadow='0 4px 10px rgba(62, 94, 215, 0.2)';">
+                            {% if session.get('user_name') %}
+                                {% set _raw = session.get('user_name')|trim %}
+                                {% set _prefixes = ['prof.', 'prof', 'mrs.', 'mrs', 'mr.', 'mr', 'ms.', 'ms', 'dr.', 'dr'] %}
+                                {% set ns = namespace(display=_raw, found=false) %}
+                                {% for _p in _prefixes %}
+                                    {% if not ns.found and _raw.lower().startswith(_p) %}
+                                        {% set ns.display = _raw[_p|length:]|trim %}
+                                        {% set ns.found = true %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ ns.display[0]|upper }}
+                            {% else %}A{% endif %}
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content Container Scrollable -->
+            <div class="db-scroll-area flex-grow-1">
+
+                <!-- Page Heading (Inside Main Content) -->
+                <div class="db-page-wrap pb-2 pt-5 mt-2 mb-3">
+                    <h3 class="fw-bold mb-1 fs-3" style="color: var(--text-primary) !important;">{% block admin_title
+                        %}{% endblock %}</h3>
+                    <p class="mb-0 fw-medium" style="color: var(--title-desc-color) !important;">{% block admin_subtitle
+                        %}{% endblock %}</p>
+
+                    <!-- Dashboard Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="mt-4">
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} admin-alert {% if category == 'success' %}admin-alert-success{% else %}admin-alert-danger{% endif %} alert-dismissible fade show border-0 px-4 py-3 mb-3 d-flex align-items-center justify-content-between"
+                            role="alert">
+                            <div class="d-flex align-items-center gap-2">
+                                <i
+                                    class="bi {% if category == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %}"></i>
+                                <span class="fw-medium">{{ message }}</span>
+                            </div>
+                            <button type="button" class="btn-close shadow-none border-0" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- Content Area -->
+                <div class="dashboard-section mt-4">
+                    <div class="db-page-wrap pt-0">
+                        {% block admin_content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const closeBtn    = document.getElementById('sidebar-close-btn');
+        const mobileBtn   = document.getElementById('mobile-menu-btn');
+        const sidebar     = document.querySelector('.admin-sidebar');
+        const overlay     = document.getElementById('sidebar-mobile-overlay');
+
+        // ── Desktop & Tablet: collapsed state via localStorage & dynamic viewport defaults ──
+        function applySidebarState() {
+            if (window.innerWidth > 768) {
+                const savedPreference = localStorage.getItem('sidebar-collapsed');
+                if (savedPreference !== null) {
+                    if (savedPreference === 'true') {
+                        document.documentElement.classList.add('sidebar-collapsed');
+                    } else {
+                        document.documentElement.classList.remove('sidebar-collapsed');
+                    }
+                } else {
+                    // Default behavior (no preference): Auto-collapse on medium viewports (768px-1200px), expand on large (>1200px)
+                    if (window.innerWidth <= 1200) {
+                        document.documentElement.classList.add('sidebar-collapsed');
+                    } else {
+                        document.documentElement.classList.remove('sidebar-collapsed');
+                    }
+                }
+            } else {
+                // On mobile, always remove desktop collapse class (uses mobile slide-in drawer layout instead)
+                document.documentElement.classList.remove('sidebar-collapsed');
+            }
+        }
+        applySidebarState();
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    // On mobile: close drawer
+                    closeMobileSidebar();
+                } else {
+                    // On desktop & tablet (>768px): toggle collapsed
+                    const nowCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+                    localStorage.setItem('sidebar-collapsed', nowCollapsed);
+                }
+            });
+        }
+
+        // ── Mobile: open drawer ────────────────────────────────────────
+        function openMobileSidebar() {
+            if (!sidebar || !overlay) return;
+            sidebar.classList.add('mobile-open');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileSidebar() {
+            if (!sidebar || !overlay) return;
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (mobileBtn) {
+            mobileBtn.addEventListener('click', openMobileSidebar);
+        }
+
+        if (overlay) {
+            overlay.addEventListener('click', closeMobileSidebar);
+        }
+
+        // Close drawer on resize to desktop & reapply sidebar state
+        window.addEventListener('resize', function () {
+            if (window.innerWidth > 768) {
+                closeMobileSidebar();
+                document.body.style.overflow = '';
+            }
+            applySidebarState();
+        });
+
+        // Close drawer when a sidebar link is clicked on mobile
+        if (sidebar) {
+            sidebar.querySelectorAll('.sidebar-nav-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        closeMobileSidebar();
+                    }
+                });
+            });
+        }
+    });
+
+    // Prevent back-button from showing stale dashboard after logout
+    window.addEventListener('pageshow', function (event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            window.location.reload();
+        }
+    });
+</script>
+
+<!-- Profile Modal Removed (Now uses dedicated Profile Page) -->
+
+<!-- ============================================================ -->
+<!--  CHANGE PASSWORD MODAL OVERLAY                               -->
+<!-- ============================================================ -->
+<div id="admin-password-modal-overlay" class="modal-overlay">
+    <div class="login-modal-card">
+        <button id="close-password-modal" class="modal-close-btn" aria-label="Close Modal">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="modal-header">
+            <h2 class="modal-title">Change Password</h2>
+            <p class="modal-subtitle">Update your account password securely.</p>
+        </div>
+
+        <form id="admin-password-change-form" class="modal-form">
+            <div class="form-group">
+                <label for="admin_current_password" class="form-label">Current Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="admin_current_password" name="current_password" placeholder="Enter current password" required>
+                    <button type="button" id="toggle-current-password" class="password-toggle-btn">
+                        <span class="password-toggle-icon-wrapper">
+                            <i class="fa-regular fa-eye icon-sm" id="toggle-current-password-icon"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="admin_new_password" class="form-label">New Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="admin_new_password" name="new_password" placeholder="Enter new password (min 6 chars)" minlength="6" required>
+                    <button type="button" id="toggle-new-password" class="password-toggle-btn">
+                        <span class="password-toggle-icon-wrapper">
+                            <i class="fa-regular fa-eye icon-sm" id="toggle-new-password-icon"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="admin_confirm_password" class="form-label">Confirm New Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="admin_confirm_password" name="confirm_password" placeholder="Re-enter new password" minlength="6" required>
+                    <button type="button" id="toggle-confirm-password" class="password-toggle-btn">
+                        <span class="password-toggle-icon-wrapper">
+                            <i class="fa-regular fa-eye icon-sm" id="toggle-confirm-password-icon"></i>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="admin-modal-error-message" class="modal-error-msg" style="display: none;">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span id="admin-error-text">Passwords do not match.</span>
+            </div>
+
+
+            <button type="submit" id="admin-password-submit-btn" class="modal-submit-btn">
+                <span>Save New Password</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // User Dropdown and Profile Modal scripts removed.
+        // Change Password Modal
+        const passwordOverlay = document.getElementById("admin-password-modal-overlay");
+        const triggerPassword = document.getElementById("open-change-password-modal");
+        const closePassword = document.getElementById("close-password-modal");
+        const passwordForm = document.getElementById("admin-password-change-form");
+        const passInput = document.getElementById("admin_new_password");
+        const confirmInput = document.getElementById("admin_confirm_password");
+        const errorDiv = document.getElementById("admin-modal-error-message");
+        const errorText = document.getElementById("admin-error-text");
+        const submitBtn = document.getElementById("admin-password-submit-btn");
+
+        if (triggerPassword && passwordOverlay) {
+            triggerPassword.addEventListener("click", function () {
+                passwordOverlay.classList.add("active");
+                document.body.style.overflow = "hidden";
+            });
+
+            function closePasswordModal() {
+                passwordOverlay.classList.remove("active");
+                document.body.style.overflow = "";
+                passwordForm.reset();
+                errorDiv.style.display = "none";
+                submitBtn.classList.remove('disabled');
+                submitBtn.classList.remove('btn-loading');
+                submitBtn.innerHTML = '<span>Save New Password</span>';
+            }
+
+            closePassword.addEventListener("click", closePasswordModal);
+            
+            // Clear error on typing and ensure button is reset
+            const passwordInputs = passwordForm.querySelectorAll('input');
+            passwordInputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    errorDiv.style.display = 'none';
+                    submitBtn.classList.remove('disabled');
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '<span>Save New Password</span>';
+                });
+            });
+            
+            // Password verification and AJAX submission
+            passwordForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                if (submitBtn.classList.contains('disabled')) {
+                    return false;
+                }
+                const current = document.getElementById("admin_current_password").value;
+                const pass = passInput.value;
+                const confirm = confirmInput.value;
+
+                if (pass !== confirm) {
+                    errorText.textContent = "New Passwords do not match!";
+                    errorDiv.style.display = "flex";
+                    submitBtn.classList.remove('disabled');
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '<span>Save New Password</span>';
+                    return false;
+                }
+
+                if (pass.length < 6) {
+                    errorText.textContent = "Password must be at least 6 characters long.";
+                    errorDiv.style.display = "flex";
+                    submitBtn.classList.remove('disabled');
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '<span>Save New Password</span>';
+                    return false;
+                }
+
+                errorDiv.style.display = "none";
+                
+                // Show loading state
+                submitBtn.classList.add('disabled');
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving...';
+
+                try {
+                    const formData = new FormData(passwordForm);
+                    const response = await fetch('/admin/change-password', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        window.location.href = result.redirect;
+                    } else {
+                        errorText.textContent = result.message;
+                        errorDiv.style.display = "flex";
+                        // Reset button
+                        submitBtn.classList.remove('disabled');
+                        submitBtn.classList.remove('btn-loading');
+                        submitBtn.innerHTML = '<span>Save New Password</span>';
+                    }
+                } catch (error) {
+                    errorText.textContent = "An error occurred. Please try again.";
+                    errorDiv.style.display = "flex";
+                    submitBtn.classList.remove('disabled');
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '<span>Save New Password</span>';
+                }
+            });
+
+            // Password Toggle Helpers
+            const setupPasswordToggle = (btnId, inputId, iconId) => {
+                const btn = document.getElementById(btnId);
+                const input = document.getElementById(inputId);
+                if (btn && input) {
+                    btn.addEventListener('click', () => {
+                        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                        input.setAttribute('type', type);
+                        const wrapper = btn.querySelector('.password-toggle-icon-wrapper');
+                        const isPassword = type === 'password';
+                        if (wrapper) {
+                            wrapper.innerHTML = `<i class="fa-regular ${isPassword ? 'fa-eye' : 'fa-eye-slash'} icon-sm" id="${iconId}"></i>`;
+                        }
+                    });
+                }
+            };
+
+            setupPasswordToggle('toggle-current-password', 'admin_current_password', 'toggle-current-password-icon');
+            setupPasswordToggle('toggle-new-password', 'admin_new_password', 'toggle-new-password-icon');
+            setupPasswordToggle('toggle-confirm-password', 'admin_confirm_password', 'toggle-confirm-password-icon');
+
+            // Close modal on background overlay click
+            passwordOverlay.addEventListener("click", function (e) {
+                if (e.target === passwordOverlay) {
+                    closePasswordModal();
+                }
+            });
+
+            // Close modal on Escape key press
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && passwordOverlay.classList.contains("active")) {
+                    closePasswordModal();
+                }
+            });
+        }
+        // Initialize Lucide icons on load
+        lucide.createIcons();
+    });
+</script>
+{% block admin_extra_scripts %}{% endblock %}
+{% endblock %}

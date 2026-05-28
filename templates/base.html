@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Feedback Review System{% endblock %}</title>
+    <meta name="description"
+        content="{% block meta_description %}A simple platform for students to share anonymous feedback about their courses and teachers.{% endblock %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Font Awesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Flaticon UIcons -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-chubby/css/uicons-solid-chubby.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-rounded/css/uicons-solid-rounded.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
+    <link rel="stylesheet"
+        href="https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-straight/css/uicons-solid-straight.css">
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/3.0.0/uicons-bold-rounded/css/uicons-bold-rounded.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=28">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- ============================================================ -->
+    <!--  NAVBAR                                                       -->
+    <!-- ============================================================ -->
+    {% block navbar %}
+    {% if not hide_navbar %}
+    <nav class="navbar navbar-expand-lg sticky-top" id="main-navbar">
+        <div class="container navbar-container">
+            <!-- Logo -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
+                <i class="fi fi-sr-star-of-david me-2 text-primary logo-icon"></i>
+                <span class="brand-text">
+                    FEEDBACK <span class="text-primary">REVIEW</span> SYSTEM
+                </span>
+            </a>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('feedback.submit_feedback') }}">Feedback</a>
+                    </li>
+                    {% if session.get('user_id') %}
+                    <li class="nav-item">
+                        <a href="{% if session.get('role') == 'admin' %}{{ url_for('admin.dashboard') }}{% else %}{{ url_for('admin.teacher_dashboard') }}{% endif %}" class="btn-pill-login">
+                            <i class="fi fi-sr-layout-fluid"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url_for('admin.logout') }}" class="btn-pill-logout">
+                            <i class="fi fi-br-sign-out-alt"></i>
+                            <span>Log Out</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="javascript:void(0)" class="btn-pill-login" id="open-login-modal">
+                            <i class="fi fi-sr-user"></i>
+                            <span>Login</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+    {% endblock %}
+
+
+
+    <!-- ============================================================ -->
+    <!--  MAIN CONTENT                                                 -->
+    <!-- ============================================================ -->
+
+    {% block flash_messages %}
+    <!-- Flash Messages (Success/Error Alerts) -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+            {% if category == 'success' %}
+            <i class="bi bi-check-circle-fill me-2"></i>
+            {% elif category == 'danger' %}
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% else %}
+            <i class="bi bi-info-circle-fill me-2"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+    {% endblock %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+
+
+    <!-- ============================================================ -->
+    <!--  LOGIN MODAL                                              -->
+    <!-- ============================================================ -->
+    <div id="login-modal-overlay" class="modal-overlay">
+        <div class="login-modal-card">
+            <button id="close-login-modal" class="modal-close-btn" aria-label="Close Modal">
+                <i class="fa-solid fa-xmark icon-thin"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome Back!</h2>
+                <p class="modal-subtitle">Sign in to manage feedback, review insights, and improve the learning
+                    experience.</p>
+            </div>
+
+            <form id="login-form" class="modal-form">
+                <div class="form-group">
+                    <label for="login-username" class="form-label">User ID</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-circle-user input-icon"></i>
+                        <input type="text" id="login-username" name="user_id" placeholder="Enter your user ID" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password"
+                            required>
+                        <button type="button" id="toggle-password" class="password-toggle-btn">
+                            <span class="password-toggle-icon-wrapper">
+                                <i class="fa-regular fa-eye icon-sm"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="login-error-message" class="modal-error-msg" style="display: none;">
+                    <i class="fa-solid fa-circle-exclamation icon-xs me-2"></i>
+                    <span>Invalid credentials. Please try again.</span>
+                </div>
+
+                <button type="submit" id="login-submit-btn" class="modal-submit-btn">
+                    <span>Sign In</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {% block footer %}{% endblock %}
+
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}?v=4"></script>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,157 @@
+{% extends "admin/base.html" %}
+
+{% block admin_page_title %}Admins{% endblock %}
+
+{% block admin_title %}Admins{% endblock %}
+{% block admin_subtitle %}Create and manage administrator accounts for the system.{% endblock %}
+
+{% block admin_content %}
+
+<!-- ══════════════════════════════════════════════════
+     HEADER ACTION CARDS (Two-column layout)
+══════════════════════════════════════════════════ -->
+<div class="row g-4 mb-5">
+    <!-- CARD 1: PROMOTE EXISTING TEACHER -->
+    <div class="col-lg-6">
+        <div class="sa-action-card">
+            <div style="height:4px;background:var(--primary);"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="db-metric-icon">
+                        <i class="fi fi-br-shield-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="db-chart-title mb-0">Promote Teacher to Admin</h5>
+                    </div>
+                </div>
+                <form action="{{ url_for('admin.promote_teacher') }}" method="POST">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <select id="teacher_select" name="teacher_id"
+                                class="db-filter-input form-select shadow-none" required>
+                                <option value="" disabled selected>Select Teacher to Promote</option>
+                                {% for t in teachers %}
+                                {% if t.user_id %}
+                                <option value="{{ t.user_id }}">{{ t.name }} ({{ t.user_id }})</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="db-filter-btn-submit w-100" style="height: 42px;">
+                                <i class="fi fi-br-shield-check" style="font-size:14px;line-height:1;"></i>
+                                Promote
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD 2: CREATE CUSTOM ADMIN -->
+    <div class="col-lg-6">
+        <div class="sa-action-card">
+            <div style="height:4px;background:var(--primary);"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="db-metric-icon">
+                        <i class="fi fi-br-key"></i>
+                    </div>
+                    <div>
+                        <h5 class="db-chart-title mb-0">Create Custom Admin</h5>
+                    </div>
+                </div>
+                <form action="{{ url_for('admin.add_admin') }}" method="POST">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-5">
+                            <input type="text" id="admin_username" name="username"
+                                class="db-filter-input form-control shadow-none" placeholder="Admin ID e.g. ADM001"
+                                required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" name="name" class="db-filter-input form-control shadow-none"
+                                placeholder="Full Name" required>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="db-filter-btn-submit w-100" style="height: 42px;">
+                                <i class="fi fi-br-user-add" style="font-size:14px;line-height:1;"></i>
+                                Create
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     ADMINS DIRECTORY TABLE
+══════════════════════════════════════════════════ -->
+<div class="db-table-card">
+    <!-- Table Header -->
+    <div class="db-table-card__header">
+        <div>
+            <h3 class="db-chart-title">Admins Directory</h3>
+            <p class="db-chart-desc">Manage your system administrators and control administrative access.</p>
+        </div>
+        {% if admins %}
+        <span
+            class="badge rounded-pill px-3 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-2"
+            style="font-family: 'Poppins', sans-serif; font-size: 0.88rem; letter-spacing: 0.3px; height: 36px; background-color: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border) !important;">
+            <i class="fi fi-br-shield-check" style="font-size: 14px; line-height: 1;"></i>
+            {{ admins|length }} Admin{{ 's' if admins|length != 1 }}
+        </span>
+        {% endif %}
+    </div>
+
+    <div class="db-table-card__body">
+        {% if admins %}
+        <div class="db-table-wrap">
+            <table class="db-table db-table--compact db-table--narrow align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:25%;">User ID</th>
+                        <th style="width:55%;">Name</th>
+                        <th style="width:20%;" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admin in admins %}
+                    <tr>
+                        <td class="db-table__date">{{ admin.user_id }}</td>
+                        <td class="db-table__teacher">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-semibold">{{ admin.name }}</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            {% if session.get('user_id') != admin.user_id %}
+                            <form action="{{ url_for('admin.delete_admin', admin_id=admin.user_id) }}" method="POST"
+                                class="d-inline db-confirm-form"
+                                data-confirm="Delete admin privileges from {{ admin.name }}?">
+                                <button type="submit" class="db-btn-delete" title="Delete Admin" style="outline: none;">
+                                    <i class="fi fi-br-trash"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted" style="font-size: 0.8rem; font-style: italic;">Current
+                                Session</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="db-table-empty py-5">
+            <i class="fi fi-br-shield-check db-chart-empty__icon"></i>
+            <p class="mt-2 text-muted fw-medium">No admins configured yet.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

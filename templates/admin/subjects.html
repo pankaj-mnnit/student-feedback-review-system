@@ -1,0 +1,252 @@
+{% extends "admin/base.html" %}
+
+{% block admin_page_title %}Subjects{% endblock %}
+
+{% block admin_title %}Subjects{% endblock %}
+{% block admin_subtitle %}Manage academic subjects and their assigned teachers.{% endblock %}
+
+{% block admin_content %}
+
+<!-- ══════════════════════════════════════════════════
+     HEADER ACTION CARDS
+══════════════════════════════════════════════════ -->
+<div class="row g-4 mb-5">
+    <!-- CARD: ADD NEW SUBJECT -->
+    <div class="col-lg-12">
+        <div class="sa-action-card">
+            <div style="height:4px;background:var(--primary);"></div>
+            <div class="p-4">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <div class="db-metric-icon">
+                        <i class="fi fi-br-book-open-cover"></i>
+                    </div>
+                    <div>
+                        <h5 class="db-chart-title mb-0">Add New Subject</h5>
+                    </div>
+                </div>
+                <form action="{{ url_for('admin.add_subject') }}" method="POST">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-lg-3 col-md-4">
+                            <input type="text" name="subject_code" class="db-filter-input form-control shadow-none"
+                                placeholder="Subject Code e.g. AL 601" maxlength="10" style="text-transform:uppercase;"
+                                required>
+                        </div>
+                        <div class="col-lg-4 col-md-5">
+                            <input type="text" name="subject_name" class="db-filter-input form-control shadow-none"
+                                placeholder="Subject Name" required>
+                        </div>
+                        <div class="col-lg-2 col-md-3">
+                            <button type="submit" class="db-filter-btn-submit w-100">
+                                <i class="fi fi-br-disk" style="font-size:14px;line-height:1;"></i>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     ALLOCATION DIRECTORY TABLE
+══════════════════════════════════════════════════ -->
+<div class="db-table-card">
+    <!-- Table Header -->
+    <div class="db-table-card__header">
+        <div>
+            <h3 class="db-chart-title">Subjects Directory</h3>
+            <p class="db-chart-desc">Manage all subjects and assign them to respective teachers.</p>
+        </div>
+        {% if subjects %}
+        <span class="badge rounded-pill px-3 py-2 fw-semibold d-inline-flex align-items-center justify-content-center gap-2"
+            style="font-family: 'Poppins', sans-serif; font-size: 0.88rem; letter-spacing: 0.3px; height: 36px; background-color: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border) !important;">
+            <i class="fi fi-br-book-open-cover" style="font-size: 14px; line-height: 1;"></i>
+            {{ subjects|length }} Subject{{ 's' if subjects|length != 1 }}
+        </span>
+        {% endif %}
+    </div>
+
+    <div class="db-table-card__body">
+        {% if subjects %}
+        <div class="db-table-wrap">
+            <table class="db-table db-table--compact align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:20%;">Subject Code</th>
+                        <th style="width:35%;">Subject Name</th>
+                        <th style="width:30%;">Assigned Teacher</th>
+                        <th style="width:15%;" class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in subjects %}
+                    <tr>
+                        <td class="db-table__date">{{ row.subject_code }}</td>
+                        <td class="db-table__subject">{{ row.subject_name }}</td>
+                        <td class="db-table__teacher">
+                            {% if row.teacher_name %}
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                {% for tname in row.teacher_name.split(', ') %}
+                                    <span style="
+                                        display: inline-flex;
+                                        align-items: center;
+                                        gap: 5px;
+                                        font-size: 0.78rem;
+                                        font-weight: 600;
+                                        color: var(--primary);
+                                        background: rgba(62, 94, 215, 0.08);
+                                        border: 1px solid rgba(62, 94, 215, 0.20);
+                                        border-radius: 20px;
+                                        padding: 3px 10px;
+                                        letter-spacing: 0.2px;
+                                    ">
+                                        <i class="fi fi-br-users" style="font-size: 11px;"></i>
+                                        {{ tname.strip() }}
+                                    </span>
+                                {% endfor %}
+                                </div>
+                            {% else %}
+                                <span style="
+                                    display: inline-flex;
+                                    align-items: center;
+                                    gap: 5px;
+                                    font-size: 0.78rem;
+                                    font-weight: 600;
+                                    color: #b45309;
+                                    background: rgba(245, 158, 11, 0.10);
+                                    border: 1px solid rgba(245, 158, 11, 0.25);
+                                    border-radius: 20px;
+                                    padding: 3px 10px;
+                                    letter-spacing: 0.2px;
+                                ">
+                                    <i class="fi fi-br-user-slash" style="font-size: 11px;"></i>
+                                    Not Assigned
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <!-- Edit Button -->
+                            <button type="button"
+                                class="db-btn-edit assign-teacher-btn"
+                                title="Assign Teacher"
+                                data-subject-code="{{ row.subject_code }}"
+                                data-subject-name="{{ row.subject_name }}"
+                                data-assigned="{{ row.teacher_ids_list | join(',') }}"
+                                style="background: none; border: none; padding: 4px 7px; border-radius: 8px;
+                                       color: {% if row.teacher_name %}var(--primary){% else %}#f59e0b{% endif %};
+                                       margin-right: 12px;
+                                       transition: background 0.18s ease, color 0.18s ease;"
+                                onmouseover="this.style.background='{% if row.teacher_name %}rgba(62,94,215,0.07){% else %}rgba(245,158,11,0.10){% endif %}'"
+                                onmouseout="this.style.background='transparent'">
+                                <i class="fi fi-br-edit" style="font-size: 14px;"></i>
+                            </button>
+
+                            <!-- Delete Form -->
+                            <form action="{{ url_for('admin.delete_subject', subject_id=row.subject_code) }}"
+                                method="POST" class="d-inline db-confirm-form"
+                                data-confirm="Delete subject '{{ row.subject_name }}'?">
+                                <button type="submit" class="db-btn-delete" title="Delete Subject">
+                                    <i class="fi fi-br-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="db-table-empty py-5">
+            <i class="fi fi-br-book-open-cover db-chart-empty__icon"></i>
+            <p class="mt-2 text-muted fw-medium">No subjects configured yet. Create your first subject above!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SHARED ASSIGN TEACHER MODAL  (outside the table)
+══════════════════════════════════════════════════ -->
+<div class="modal fade" id="assignTeacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 540px;">
+        <div class="modal-content shadow-lg border-0" style="border-radius: 15px; padding: 16px 20px;">
+            <div class="modal-header border-0 d-flex justify-content-end p-0 mb-1">
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="assignTeacherForm" action="" method="POST">
+                <div class="modal-body text-start pt-1 pb-2 px-0">
+                    <p class="mb-3" style="font-size: 0.85rem; color: #6b7280; font-family: 'Poppins', sans-serif;">
+                        Select teachers to assign to <strong id="modalSubjectLabel"></strong>
+                    </p>
+                    <div class="teacher-select-list"
+                        style="max-height: 220px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 16px; background: #ffffff;">
+                        {% for teacher in teachers %}
+                        <div class="form-check d-flex align-items-center mb-2">
+                            <input class="form-check-input shadow-none mt-0 me-3 teacher-checkbox"
+                                type="checkbox"
+                                name="teacher_ids"
+                                value="{{ teacher.user_id }}"
+                                id="modal_teacher_{{ teacher.user_id }}"
+                                style="width: 18px; height: 18px; border-color: #d1d5db; cursor: pointer;">
+                            <label class="form-check-label w-100"
+                                for="modal_teacher_{{ teacher.user_id }}"
+                                style="font-size: 0.9rem; font-weight: 500; color: #111827; cursor: pointer;">
+                                {{ teacher.name }}
+                                <span style="color: #6b7280; font-weight: 400; font-size: 0.8rem;">({{ teacher.user_id }})</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                        {% if not teachers %}
+                        <p class="text-muted mb-0" style="font-size: 0.85rem;">No teachers available.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="modal-footer border-0 d-flex justify-content-end pt-3 px-0 pb-0 gap-2">
+                    <button type="button" class="btn border-0 shadow-none" data-bs-dismiss="modal"
+                        style="font-weight: 600; padding: 7px 18px; border-radius: 15px; color: #374151; background: #f9fafb; font-family: 'Poppins', sans-serif; font-size: 0.8rem;">Cancel</button>
+                    <button type="submit" class="btn border-0 shadow-none"
+                        style="font-weight: 600; padding: 7px 18px; border-radius: 15px; color: #ffffff; background: var(--primary); font-family: 'Poppins', sans-serif; font-size: 0.8rem;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Populate the shared modal when any edit button is clicked
+    document.querySelectorAll('.assign-teacher-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var subjectCode = this.dataset.subjectCode;
+            var subjectName = this.dataset.subjectName;
+            var assignedRaw = this.dataset.assigned || '';
+            var assignedIds = assignedRaw ? assignedRaw.split(',').map(function(s){ return s.trim(); }) : [];
+
+            // Update modal title
+            document.getElementById('modalSubjectLabel').textContent = subjectCode + ' - ' + subjectName;
+
+            // Update form action
+            document.getElementById('assignTeacherForm').action = '/admin/subjects/update_teacher/' + encodeURIComponent(subjectCode);
+
+            // Tick/untick checkboxes based on currently assigned teachers
+            document.querySelectorAll('.teacher-checkbox').forEach(function (cb) {
+                cb.checked = assignedIds.includes(cb.value);
+            });
+
+            // Show the modal
+            var modal = new bootstrap.Modal(document.getElementById('assignTeacherModal'));
+            modal.show();
+        });
+    });
+
+    // Cleanup on modal hide to prevent page freeze
+    document.getElementById('assignTeacherModal').addEventListener('hidden.bs.modal', function () {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        var backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) backdrop.remove();
+    });
+</script>
+
+{% endblock %}

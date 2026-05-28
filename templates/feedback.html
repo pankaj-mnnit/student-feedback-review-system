@@ -1,0 +1,635 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Feedback - Feedback Review System{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ==========================================================================
+       FEEDBACK PAGE SaaS PREMIUM STYLES (POLISHED)
+       ========================================================================== */
+
+    .feedback-page-section {
+        position: relative;
+        background: #ffffff !important;
+        /* Pure white full page background */
+        min-height: calc(100vh - 72px - 60px);
+        /* Fill screen between navbar and footer */
+        display: flex;
+        align-items: center;
+        overflow: visible;
+        font-family: 'Poppins', sans-serif;
+    }
+
+
+
+    .feedback-title {
+        font-size: var(--heading-font-size);
+        font-weight: var(--heading-font-weight);
+        line-height: var(--heading-line-height);
+        letter-spacing: var(--heading-letter-spacing);
+        color: var(--heading-color);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .feedback-subtitle {
+        font-size: var(--heading-desc-font-size);
+        font-weight: var(--heading-desc-font-weight);
+        line-height: var(--heading-desc-line-height);
+        letter-spacing: var(--heading-desc-letter-spacing);
+        color: var(--heading-desc-color);
+        max-width: 550px;
+        margin: 0 auto;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .feedback-card {
+        max-width: 660px;
+        margin: 0 auto;
+        background: var(--card-bg);
+        /* #ffffff */
+        border: 1px solid var(--border) !important;
+        /* #e2e8f0 */
+        border-radius: 15px !important;
+        box-shadow: 0 10px 30px rgba(9, 9, 11, 0.04) !important;
+        /* Subtle premium soft shadow */
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Standardized Form Labels */
+    .form-label {
+        font-size: 0.95rem !important;
+        /* 14px-15px labels */
+        font-weight: 600 !important;
+        /* Semi-bold label weight */
+        color: var(--text-primary) !important;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Input & Dropdown Styling */
+    .custom-input-saas,
+    .custom-select-saas {
+        height: 44px;
+        border-radius: 15px !important;
+        border: 1px solid var(--border) !important;
+        padding-left: 1.25rem !important;
+        font-size: 15px !important;
+        margin-top: 8px;
+        /* 15px readable size */
+        font-weight: 500 !important;
+        color: var(--text-primary) !important;
+        background-color: var(--card-bg) !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .custom-select-saas {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 1.25rem center !important;
+        background-size: 14px 12px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+    }
+
+    .custom-select-saas:disabled {
+        background-color: #f1f5f9 !important;
+        color: var(--text-muted) !important;
+        opacity: 0.7;
+        cursor: not-allowed;
+        font-weight: 400 !important;
+    }
+
+    /* Placeholders font weight */
+    .custom-input-saas::placeholder,
+    .custom-textarea-saas::placeholder {
+        font-weight: 400 !important;
+    }
+
+    .custom-input-saas:focus,
+    .custom-select-saas:focus {
+        border-color: var(--primary) !important;
+        /* Primary Brand Color */
+        box-shadow: 0 0 0 4px rgba(62, 94, 215, 0.08) !important;
+        /* Soft brand focus halo */
+        outline: none !important;
+    }
+
+    /* Star rating elements */
+    .star-btn {
+        font-size: 1.65rem;
+        color: #cbd5e1;
+        cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+    }
+
+    /* Modern Textarea Comments */
+    .custom-textarea-saas {
+        border-radius: 15px !important;
+        border: 1px solid var(--border) !important;
+        padding: 0.9rem 1.25rem !important;
+        font-size: 15px !important;
+        /* 15px readable comments */
+        color: var(--text-primary) !important;
+        background-color: var(--card-bg) !important;
+        resize: vertical;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease !important;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .custom-textarea-saas:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 4px rgba(62, 94, 215, 0.08) !important;
+        outline: none !important;
+    }
+
+    /* Submit Button (Poppins bold, 15.5px, brand primary color) */
+    .btn-submit-saas {
+        height: 44px;
+        background: var(--primary) !important;
+        /* Project Brand Blue */
+        border: none !important;
+        border-radius: 15px !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        /* Bold enough */
+        font-size: 15.5px !important;
+        /* Standardized size */
+        box-shadow: 0 8px 16px -4px rgba(62, 94, 215, 0.25) !important;
+        transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-submit-saas:hover:not(:disabled) {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 12px 20px -5px rgba(62, 94, 215, 0.35) !important;
+        background-color: var(--primary-hover) !important;
+    }
+
+    .btn-submit-saas:active:not(:disabled) {
+        transform: translateY(0) scale(0.98) !important;
+        box-shadow: 0 4px 10px -3px rgba(62, 94, 215, 0.3) !important;
+    }
+
+    /* Validations overlay */
+    .was-validated .form-select:invalid,
+    .was-validated .form-control:invalid {
+        border-color: var(--danger) !important;
+        background-image: none !important;
+    }
+
+    .was-validated .form-select:valid,
+    .was-validated .form-control:valid {
+        border-color: var(--success) !important;
+        background-image: none !important;
+    }
+
+    /* ==========================================================================
+       SaaS-LEVEL ENTRANCE ANIMATIONS & LIFT EFFECTS
+       ========================================================================== */
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .feedback-title {
+        animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .feedback-subtitle {
+        animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: 0.1s;
+    }
+
+    .feedback-card {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: 0.15s;
+    }
+
+    /* Input Focus Lift Effects for Sleek Premium Field Interaction */
+    .custom-input-saas:focus,
+    .custom-select-saas:focus,
+    .custom-textarea-saas:focus {
+        transform: translateY(-2px) !important;
+    }
+
+    /* Smooth Premium Alert Slide-Down & Fade Transitions */
+    #client-error-alert {
+        display: flex !important;
+        /* Always display flex but collapsed */
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            padding 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            margin 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            border-width 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        opacity: 0;
+        transform: translateY(-10px);
+        max-height: 0;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
+        border-top-width: 0 !important;
+        border-bottom-width: 0 !important;
+        overflow: hidden;
+    }
+
+    #client-error-alert.show-alert {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 120px;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 24px !important;
+        border-top-width: 1px !important;
+        border-bottom-width: 1px !important;
+    }
+
+    /* ── Responsive Spacing and Sizing for Rating and Form ── */
+    @media (max-width: 480px) {
+        .feedback-page-section {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+        }
+
+        .feedback-card .card-body {
+            padding: 1.5rem !important;
+        }
+
+        .feedback-title {
+            font-size: 1.75rem !important;
+        }
+
+        .feedback-subtitle {
+            font-size: 0.95rem !important;
+        }
+
+        .star-rating-container {
+            gap: 8px !important; /* reduce gap between stars */
+        }
+
+        .star-btn {
+            font-size: 1.35rem !important; /* slightly smaller stars to prevent overflow */
+        }
+
+        .rating-label {
+            margin-left: 8px !important; /* reduce margin-left */
+            min-width: auto !important; /* remove min-width restriction */
+            font-size: 0.8rem !important;
+        }
+
+        .mb-5 {
+            margin-bottom: 2rem !important; /* adjust margins of input fields */
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="feedback-page-section py-5">
+    <div class="container my-md-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-9">
+
+                <!-- Header Area -->
+                <div class="text-center mb-5">
+                    <h1 class="feedback-title mb-3">Share Your Feedback</h1>
+                    <p class="feedback-subtitle">
+                        Your feedback helps us understand the learning experience and improve the quality of teaching.
+                    </p>
+                </div>
+
+                <!-- Main Form Card -->
+                <div class="card feedback-card border-0">
+                    <div class="card-body p-4 p-md-5">
+
+                        <!-- Client-side Error Message Overlay -->
+                        <div class="alert alert-danger d-flex align-items-center gap-2" id="client-error-alert"
+                            style="border-radius: 15px; font-size: 0.9rem; font-weight: 500; border: 1px solid rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.05); color: var(--danger);">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span id="client-error-text">Please fill all required fields before submitting.</span>
+                        </div>
+
+                        <form action="{{ url_for('feedback.submit_feedback') }}" method="POST" id="feedbackForm"
+                            class="needs-validation" novalidate>
+
+                            <!-- Subject Dropdown -->
+                            <div class="mb-5">
+                                <label for="subject_id" class="form-label mb-2">Choose Subject</label>
+                                <select class="form-select custom-select-saas" id="subject_id" name="subject_id"
+                                    required>
+                                    <option value="" selected disabled>Select Subject</option>
+                                    {% for sub in subjects %}
+                                    <option value="{{ sub.id }}">{{ sub.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Teacher Dropdown -->
+                            <div class="mb-5">
+                                <label for="teacher_id" class="form-label mb-2">Choose Teacher</label>
+                                <select class="form-select custom-select-saas" id="teacher_id" name="teacher_id"
+                                    required disabled>
+                                    <option value="" selected disabled>Select Subject First</option>
+                                </select>
+                            </div>
+
+                            <!-- Star Rating -->
+                            <div class="mb-5">
+                                <label class="form-label mb-3">Rate Your Experience</label>
+                                <div class="d-flex align-items-center flex-wrap gap-2 py-1">
+                                    <div class="star-rating-container d-flex gap-3" id="star-rating">
+                                        <i class="bi bi-star star-btn" data-value="1"></i>
+                                        <i class="bi bi-star star-btn" data-value="2"></i>
+                                        <i class="bi bi-star star-btn" data-value="3"></i>
+                                        <i class="bi bi-star star-btn" data-value="4"></i>
+                                        <i class="bi bi-star star-btn" data-value="5"></i>
+                                    </div>
+                                    <span class="rating-label ms-3 text-secondary fw-medium" id="rating-text"
+                                        style="font-size: 0.85rem; min-width: 100px; opacity: 0.85;">Select
+                                        Rating</span>
+                                </div>
+                                <input type="hidden" name="rating" id="selected-rating" required>
+                            </div>
+
+                            <!-- Comment Box -->
+                            <div class="mb-5">
+                                <label for="comments" class="form-label mb-2">Write Your Review</label>
+                                <textarea class="form-control custom-textarea-saas" id="comments" name="comments"
+                                    rows="4" maxlength="300"
+                                    placeholder="What did you like? What can we improve?" required></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid">
+                                <button type="submit"
+                                    class="btn btn-primary btn-submit-saas d-inline-flex align-items-center justify-content-center"
+                                    id="submitBtn">
+                                    <span>Submit Feedback</span>
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const subjectSelect = document.getElementById('subject_id');
+        const teacherSelect = document.getElementById('teacher_id');
+        const stars = document.querySelectorAll('.star-btn');
+        const ratingInput = document.getElementById('selected-rating');
+        const ratingText = document.getElementById('rating-text');
+        const form = document.getElementById('feedbackForm');
+        const clientErrorAlert = document.getElementById('client-error-alert');
+        const clientErrorText = document.getElementById('client-error-text');
+
+        let alertTimeout = null;
+
+        function showAlert(message, type = 'danger') {
+            // Clear any existing timeout
+            if (alertTimeout) {
+                clearTimeout(alertTimeout);
+            }
+
+            clientErrorText.textContent = message;
+
+            if (type === 'danger') {
+                clientErrorAlert.classList.remove('alert-success');
+                clientErrorAlert.classList.add('alert-danger');
+                clientErrorAlert.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                clientErrorAlert.style.background = 'rgba(239, 68, 68, 0.05)';
+                clientErrorAlert.style.color = 'var(--danger)';
+                const icon = clientErrorAlert.querySelector('i');
+                if (icon) {
+                    icon.className = 'bi bi-exclamation-triangle-fill';
+                }
+            } else {
+                clientErrorAlert.classList.remove('alert-danger');
+                clientErrorAlert.classList.add('alert-success');
+                clientErrorAlert.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                clientErrorAlert.style.background = 'rgba(16, 185, 129, 0.05)';
+                clientErrorAlert.style.color = 'var(--success)';
+                const icon = clientErrorAlert.querySelector('i');
+                if (icon) {
+                    icon.className = 'bi bi-check-circle-fill';
+                }
+            }
+
+            // Trigger transition class
+            clientErrorAlert.classList.add('show-alert');
+
+            // Scroll page smoothly to top of the card
+            clientErrorAlert.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Automatically hide after 5 seconds
+            alertTimeout = setTimeout(() => {
+                hideAlert();
+            }, 5000);
+        }
+
+        function hideAlert() {
+            clientErrorAlert.classList.remove('show-alert');
+        }
+
+        // Dynamic dropdown loading of teachers based on subject selection
+        if (subjectSelect && teacherSelect) {
+            subjectSelect.addEventListener('change', function () {
+                const subjectId = this.value;
+
+                // Reset and show loading state
+                teacherSelect.disabled = true;
+                teacherSelect.innerHTML = '<option value="" selected disabled>Loading teachers...</option>';
+
+                if (!subjectId) return;
+
+                // Fetch teachers from database API
+                fetch(`/get-teachers/${subjectId}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('API response error');
+                        return response.json();
+                    })
+                    .then(data => {
+                        teacherSelect.innerHTML = '<option value="" selected disabled>Select Teacher</option>';
+                        if (data && data.length > 0) {
+                            data.forEach(teacher => {
+                                const option = document.createElement('option');
+                                option.value = teacher.id;
+                                option.textContent = teacher.name;
+                                teacherSelect.appendChild(option);
+                            });
+                            teacherSelect.disabled = false;
+                        } else {
+                            teacherSelect.innerHTML = '<option value="" selected disabled>No teachers found</option>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching teachers:', error);
+                        teacherSelect.innerHTML = '<option value="" selected disabled>Error loading teachers</option>';
+                    });
+            });
+        }
+
+        // Premium Star Rating Interaction Logic (Dynamic preview & locking)
+        const ratingDescriptions = {
+            1: 'Poor',
+            2: 'Fair',
+            3: 'Average',
+            4: 'Good',
+            5: 'Excellent'
+        };
+
+        let currentSelectedRating = 0;
+
+        function updateStarsDisplay(ratingValue) {
+            stars.forEach(star => {
+                const val = parseInt(star.getAttribute('data-value'));
+                if (val <= ratingValue) {
+                    star.classList.replace('bi-star', 'bi-star-fill');
+                    star.style.color = 'var(--primary)'; // Accent Brand Blue
+                    star.style.transform = 'scale(1.15)';
+                } else {
+                    star.classList.replace('bi-star-fill', 'bi-star');
+                    star.style.color = '#cbd5e1'; // Neutral slate
+                    star.style.transform = 'scale(1)';
+                }
+            });
+        }
+
+        stars.forEach(star => {
+            // Hover inside
+            star.addEventListener('mouseenter', function () {
+                const hoverValue = parseInt(this.getAttribute('data-value'));
+                updateStarsDisplay(hoverValue);
+                ratingText.textContent = ratingDescriptions[hoverValue] || 'Select Rating';
+            });
+
+            // Hover outside
+            star.addEventListener('mouseleave', function () {
+                updateStarsDisplay(currentSelectedRating);
+                ratingText.textContent = ratingDescriptions[currentSelectedRating] || 'Select Rating';
+            });
+
+            // Click to Lock selection
+            star.addEventListener('click', function () {
+                currentSelectedRating = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = currentSelectedRating;
+                updateStarsDisplay(currentSelectedRating);
+                ratingText.textContent = ratingDescriptions[currentSelectedRating];
+
+                // Clear rating validation error if selected
+                hideAlert();
+            });
+        });
+
+        // Form Client-side Validations & AJAX submission
+        if (form) {
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                let isValid = true;
+                let errorMessage = '';
+
+                // 1. Check dropdowns
+                if (!subjectSelect.value || !teacherSelect.value) {
+                    isValid = false;
+                    errorMessage = 'Please select both subject and teacher.';
+                }
+
+                // 2. Check rating
+                if (isValid && !ratingInput.value) {
+                    isValid = false;
+                    errorMessage = 'Please select a rating value.';
+                }
+
+                // 3. Check comments
+                if (isValid && !document.getElementById('comments').value.trim()) {
+                    isValid = false;
+                    errorMessage = 'Please write your review comments.';
+                }
+
+                if (!form.checkValidity() || !isValid) {
+                    // Show localized premium error alert
+                    showAlert(errorMessage || 'Please fill all required fields before submitting.', 'danger');
+
+                    // Triggers bootstrap styling borders
+                    form.classList.add('was-validated');
+                } else {
+                    // Clear error alerts and submit via AJAX (fetch)
+                    hideAlert();
+                    form.classList.remove('was-validated');
+
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            // Display success message
+                            showAlert(data.message || "Feedback submitted successfully. Thank you for sharing your review.", "success");
+
+                            // Completely reset form
+                            form.reset();
+                            currentSelectedRating = 0;
+                            ratingInput.value = '';
+                            updateStarsDisplay(0);
+                            ratingText.textContent = 'Select Rating';
+
+                            // Reset character counter
+                            const commentsArea = document.getElementById('comments');
+                            if (commentsArea) {
+                                commentsArea.dispatchEvent(new Event('input'));
+                            }
+
+                            // Re-disable the teacher select until a subject is chosen again
+                            teacherSelect.disabled = true;
+                            teacherSelect.innerHTML = '<option value="" selected disabled>Select Subject First</option>';
+                        } else {
+                            // Server returned a validation error as JSON
+                            showAlert(data.message || "Error saving feedback. Please try again.", "danger");
+                        }
+                    } catch (error) {
+                        console.error('Error submitting feedback:', error);
+                        showAlert("A network error occurred. Please check your connection and try again.", "danger");
+                    }
+                }
+            });
+
+            // Clear error alerts when inputs change
+            const clearErrors = () => {
+                if (subjectSelect.value && teacherSelect.value && ratingInput.value && document.getElementById('comments').value.trim()) {
+                    hideAlert();
+                }
+            };
+            subjectSelect.addEventListener('change', clearErrors);
+            teacherSelect.addEventListener('change', clearErrors);
+            document.getElementById('comments').addEventListener('input', clearErrors);
+        }
+    });
+</script>
+{% endblock %}

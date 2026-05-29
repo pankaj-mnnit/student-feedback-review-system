@@ -137,7 +137,3 @@ The objective of this project is to provide a simple and efficient platform for 
 - Improved data visualization
 
 ---
-
-## 📄 License
-
-This project was developed as a **Minor Academic Project** for educational and learning purposes.

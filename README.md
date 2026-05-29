@@ -1,39 +1,52 @@
-# Student Feedback Review System
+# 🎓 Student Feedback Review System
 
-A web-based feedback management system that allows students to submit anonymous feedback for subjects and teachers. The system uses sentiment analysis to classify feedback and provides separate dashboards for teachers and administrators to review insights and manage records.
+A web-based feedback management system that enables students to submit anonymous feedback for subjects and teachers. The system uses sentiment analysis to classify reviews and provides dedicated dashboards for teachers and administrators to monitor feedback and performance insights.
 
-## Features
+---
 
-### Student Module
+## ✨ Features
+
+### 👨‍🎓 Student Module
 - Anonymous feedback submission
 - Subject-wise teacher selection
-- Star rating system (1–5)
+- 1–5 star rating system
 - Feedback comments with character limit
+- Responsive and user-friendly interface
 
-### Sentiment Analysis
-- Automatic feedback analysis using TextBlob
-- Classifies reviews as Positive, Neutral, or Negative
+### 🤖 Sentiment Analysis
+- Automatic sentiment classification using TextBlob
+- Categorizes feedback as:
+  - Positive
+  - Neutral
+  - Negative
 
-### Teacher Module
+### 👨‍🏫 Teacher Module
 - Personal dashboard
-- Average rating and feedback statistics
-- Sentiment overview
+- Average rating overview
+- Feedback statistics
+- Sentiment distribution analysis
 - View received feedback
 
-### Admin Module
+### 👨‍💼 Admin Module
 - Manage teachers and subjects
 - View and manage feedback records
 - Dashboard with overall statistics
 - Create and manage admin accounts
 
-## Technology Stack
+---
 
-- **Frontend:** HTML, CSS, JavaScript, Bootstrap 5
-- **Backend:** Python, Flask
-- **Database:** SQLite
-- **Sentiment Analysis:** TextBlob
+## 🛠️ Technology Stack
 
-## Project Structure
+| Category | Technology |
+|-----------|------------|
+| Frontend | HTML, CSS, JavaScript, Bootstrap 5 |
+| Backend | Python, Flask |
+| Database | SQLite |
+| NLP | TextBlob |
+
+---
+
+## 📁 Project Structure
 
 ```text
 Student Feedback Review System/
@@ -41,6 +54,7 @@ Student Feedback Review System/
 ├── app.py
 ├── database.py
 ├── requirements.txt
+├── feedback_system.db
 │
 ├── routes/
 │   ├── admin.py
@@ -52,29 +66,51 @@ Student Feedback Review System/
 │
 ├── static/
 │   ├── css/
+│   │   └── style.css
 │   └── js/
+│       └── script.js
 │
 └── templates/
+    ├── 404.html
+    ├── 500.html
+    ├── base.html
+    ├── index.html
+    ├── feedback.html
+    │
     ├── admin/
+    │   ├── base.html
+    │   ├── dashboard.html
+    │   ├── feedbacks.html
+    │   ├── teachers.html
+    │   ├── subjects.html
+    │   ├── admins.html
+    │   └── profile.html
+    │
     └── teacher/
+        ├── dashboard.html
+        └── feedbacks.html
 ```
 
-## Database
+---
 
-The system uses SQLite and consists of the following main tables:
+## 🗄️ Database Tables
 
-- Subjects
-- Teachers
-- Subject Teachers
-- Feedback
-- System Flags
+The system uses SQLite and includes the following tables:
 
-## Installation
+- `subjects`
+- `teachers`
+- `subject_teachers`
+- `feedback`
+- `system_flags`
+
+---
+
+## 🚀 Installation
 
 ### Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/your-username/student-feedback-review-system.git
 cd "Student Feedback Review System"
 ```
 
@@ -92,7 +128,7 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-**Linux / macOS**
+**Linux/macOS**
 
 ```bash
 source venv/bin/activate
@@ -116,29 +152,42 @@ Open your browser and visit:
 http://127.0.0.1:5000
 ```
 
-## Default Login Credentials
+---
 
-### Admin
+## 🔐 Default Login Credentials
 
-```text
-User ID: ADM001
-Password: 123456
-```
-
-### Teacher
+### Admin Account
 
 ```text
-User ID: TCH001
-Password: 123456
+User ID  : ADM001
+Password : 123456
 ```
 
-## Future Enhancements
+### Teacher Account
+
+```text
+User ID  : TCH001
+Password : 123456
+```
+
+---
+
+## 🎯 Project Objective
+
+The objective of this project is to provide a simple and efficient platform for collecting student feedback, analyzing opinions using sentiment analysis, and helping educational institutions improve teaching quality through data-driven insights.
+
+---
+
+## 📈 Future Enhancements
 
 - Advanced analytics dashboard
 - Feedback report export
 - Email notifications
 - Enhanced sentiment analysis
+- Improved data visualization
 
-## License
+---
 
-This project was developed as a minor academic project for educational purposes.
+## 📄 License
+
+This project was developed as a **Minor Academic Project** for educational and learning purposes.

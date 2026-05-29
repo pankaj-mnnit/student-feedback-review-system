@@ -1,63 +1,42 @@
-# Student Feedback Review System 🎓💬
+# Student Feedback Review System 🎓
 
-An AI-powered, modern, and anonymous student feedback platform designed for educational institutions. The system enables students to submit ratings and feedback for courses and instructors while maintaining complete anonymity. Administrators and teachers can access dedicated dashboards to monitor feedback, analyze performance, and gain meaningful insights for continuous improvement.
-
-Built with Flask, SQLite, and TextBlob, the platform combines a responsive SaaS-inspired user interface with intelligent sentiment analysis to create a complete feedback management solution.
+A web-based feedback management system developed for educational institutions to collect anonymous student feedback about subjects and teachers. The system helps administrators and faculty members understand student opinions and improve the overall learning experience.
 
 ---
 
-## 🌟 Key Features
+## ✨ Features
 
-### 👨‍🎓 For Students
-- 100% Anonymous Feedback Submission
-- Dynamic Subject & Teacher Selection
-- Interactive Rating System
-- Anonymous Review Submission
-- Responsive User Experience
+### Student
+- Submit anonymous feedback
+- Select subject and teacher
+- Give ratings on multiple criteria
+- Share suggestions and comments
 
-### 🤖 AI Sentiment Analysis
-- TextBlob NLP Integration
-- Automatic Sentiment Classification
-- Positive, Neutral & Negative Detection
-- Real-Time Feedback Processing
-- Future Analytics Support
+### Teacher
+- View received feedback
+- Monitor ratings and performance
+- Access feedback insights
 
-### 👨‍🏫 For Teachers
-- Personal Dashboard
-- Performance Monitoring
-- Recent Feedback Overview
-- Rating Insights
-- Teaching Improvement Analytics
+### Admin
+- Manage teachers
+- Manage subjects
+- Manage subject-teacher mappings
+- View and monitor feedback
+- Access analytics dashboard
 
-### 👨‍💼 For Administrators
-- Complete System Management
-- Teacher Management
-- Subject Management
-- Subject Mapping Management
-- Feedback Monitoring
-- Analytics & Insights
-- Administrator Management
-
-### 🎨 UI/UX Highlights
-- Modern SaaS Design Language
-- Responsive Dashboard Layouts
-- Professional Sidebar Navigation
-- Premium Card-Based Interface
-- Smooth Animations & Hover Effects
-- Consistent Typography & Spacing
+### AI Integration
+- Automatic sentiment analysis using TextBlob
+- Classifies feedback as Positive, Neutral, or Negative
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology |
-|---------|------------|
-| Frontend | HTML5, CSS3, JavaScript |
-| Backend | Python, Flask |
-| Database | SQLite3 |
-| NLP Engine | TextBlob |
-| Icons | Lucide Icons |
-| UI Design | Custom SaaS Design System |
+- **Frontend:** HTML, CSS, JavaScript
+- **Backend:** Python, Flask
+- **Database:** SQLite
+- **NLP:** TextBlob
+- **Icons:** Lucide Icons
 
 ---
 
@@ -68,144 +47,76 @@ Student Feedback Review System/
 │
 ├── app.py
 ├── database.py
-├── requirements.txt
 ├── feedback_system.db
+├── requirements.txt
 │
 ├── routes/
 │   ├── admin.py
 │   ├── feedback.py
 │   └── main.py
 │
-├── utils/
-│   └── sentiment.py
-│
 ├── static/
 │   ├── css/
-│   │   └── style.css
-│   │
 │   ├── js/
-│   │   └── script.js
-│   │
 │   └── images/
 │
-└── templates/
-    ├── 404.html
-    ├── 500.html
-    ├── base.html
-    ├── index.html
-    ├── login.html
-    ├── feedback.html
-    │
-    ├── admin/
-    │   ├── base.html
-    │   ├── dashboard.html
-    │   ├── analytics.html
-    │   ├── feedbacks.html
-    │   ├── teachers.html
-    │   ├── subjects.html
-    │   ├── mappings.html
-    │   └── admins.html
-    │
-    └── teacher/
-        ├── dashboard.html
-        └── feedbacks.html
+├── templates/
+│   ├── admin/
+│   ├── teacher/
+│   ├── index.html
+│   ├── login.html
+│   └── feedback.html
+│
+└── utils/
+    └── sentiment.py
 ```
 
 ---
 
-## 📊 Database Schema
+## 🗄️ Database Tables
 
-### Teachers
-
-| Field | Type |
-|---------|---------|
-| user_id | Primary Key |
-| name | Text |
-| password | Text |
-| created_at | Timestamp |
-
-### Admins
-
-| Field | Type |
-|---------|---------|
-| user_id | Primary Key |
-| name | Text |
-| password | Text |
-| role | Text |
-
-### Subjects
-
-| Field | Type |
-|---------|---------|
-| subject_code | Primary Key |
-| subject_name | Text |
-
-### Subject Teachers
-
-| Field | Type |
-|---------|---------|
-| id | Primary Key |
-| subject_code | Foreign Key |
-| teacher_user_id | Foreign Key |
-
-### Feedbacks
-
-| Field | Type |
-|---------|---------|
-| id | Primary Key |
-| subject_code | Foreign Key |
-| teacher_user_id | Foreign Key |
-| teaching_style_rating | Integer |
-| subject_knowledge_rating | Integer |
-| class_environment_rating | Integer |
-| feedback_message | Text |
-| sentiment_label | Text |
-| created_at | Timestamp |
+- Admins
+- Teachers
+- Subjects
+- Subject Teachers
+- Feedbacks
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Installation
 
-### 1️⃣ Clone the Repository
+1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd Student-Feedback-Review-System
 ```
 
-### 2️⃣ Create Virtual Environment
+2. Create virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-### 3️⃣ Activate Virtual Environment
-
-#### Windows
+3. Activate virtual environment
 
 ```bash
 venv\Scripts\activate
 ```
 
-#### Linux / macOS
-
-```bash
-source venv/bin/activate
-```
-
-### 4️⃣ Install Dependencies
+4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5️⃣ Run the Application
+5. Run the application
 
 ```bash
 python app.py
 ```
 
-### 6️⃣ Open in Browser
+6. Open in browser
 
 ```text
 http://127.0.0.1:5000
@@ -213,115 +124,33 @@ http://127.0.0.1:5000
 
 ---
 
-## 🔐 Authentication System
-
-The platform uses secure role-based authentication.
-
-### Administrator Access
-- Manage Teachers
-- Manage Subjects
-- Manage Subject Mappings
-- Manage Admins
-- Review Feedback
-- Access Analytics Dashboard
-
-### Teacher Access
-- View Assigned Subjects
-- Access Feedback Dashboard
-- Monitor Ratings
-- Review Performance Insights
-
-### Student Access
-- Submit Anonymous Feedback
-- Rate Learning Experience
-- Share Suggestions & Reviews
-
----
-
-## 🗺️ Route Structure
-
-### Public Routes
-
-```text
-/
-/login
-/feedback
-/get-teachers/<subject_code>
-```
-
-### Teacher Routes
-
-```text
-/teacher/dashboard
-/teacher/feedbacks
-/logout
-```
-
-### Admin Routes
-
-```text
-/admin/dashboard
-/admin/analytics
-/admin/feedbacks
-/admin/teachers
-/admin/subjects
-/admin/mappings
-/admin/admins
-/logout
-```
-
----
-
-## 🔒 Security Features
-
-- Session-Based Authentication
-- Role-Based Access Control
-- Protected Admin Routes
-- Protected Teacher Routes
-- Secure Logout Handling
-- Parameterized SQLite Queries
-- Anonymous Feedback Collection
-- Input Validation & Sanitization
-- Cache-Control Protection After Logout
-
----
-
-## 📈 Core Modules
+## 🔐 Modules
 
 ### Student Module
-- Submit Anonymous Feedback
-- Dynamic Teacher Loading
-- Multi-Criteria Rating System
-- Review Submission
+- Anonymous Feedback Submission
+- Teacher & Subject Selection
+- Rating System
 
 ### Teacher Module
-- Personal Dashboard
-- Feedback Monitoring
-- Rating Insights
-- Performance Tracking
+- Feedback Dashboard
+- Performance Monitoring
 
 ### Admin Module
-- Dashboard Overview
-- Teacher Management
+- User Management
 - Subject Management
-- Subject Mapping
-- Administrator Management
 - Feedback Monitoring
 - Analytics Dashboard
 
 ---
 
-## 🎯 Project Highlights
+## 📄 Project Objective
 
-- Anonymous Student Feedback Collection
-- AI-Powered Sentiment Analysis
-- Role-Based Authentication System
-- Admin & Teacher Dashboards
-- Subject & Faculty Management
-- SQLite Database Integration
-- Flask-Based Backend Architecture
-- Modern SaaS-Inspired User Interface
-- Responsive Design Across Devices
-- Clean Modular Project Structure
+The main objective of this project is to provide a secure and anonymous platform where students can share their feedback about subjects and faculty members. The collected feedback helps teachers and administrators identify strengths, address concerns, and improve the overall quality of education.
 
 ---
+
+## 👨‍💻 Developed For
+
+Minor Project – Student Feedback Review System
+
+Department of Computer Science & Engineering

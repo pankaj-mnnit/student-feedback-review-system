@@ -1,59 +1,63 @@
 # Student Feedback Review System 🎓💬
 
-An AI-powered, modern, and anonymous student feedback platform designed for educational institutions. This system allows students to submit ratings and review comments for their courses and instructors in under a minute, completely anonymously. The backend is built with Python and Flask, utilizing TextBlob for real-time sentiment analysis, while the frontend offers a responsive, polished, and premium SaaS-style interface.
+An AI-powered, modern, and anonymous student feedback platform designed for educational institutions. The system enables students to submit ratings and feedback for courses and instructors while maintaining complete anonymity. Administrators and teachers can access dedicated dashboards to monitor feedback, analyze performance, and gain meaningful insights for continuous improvement.
+
+Built with Flask, SQLite, and TextBlob, the platform combines a responsive SaaS-inspired user interface with intelligent sentiment analysis to create a complete feedback management solution.
 
 ---
 
 ## 🌟 Key Features
 
-### 1. For Students
-*   **100% Anonymous Feedback:** No registration or login required. Students can voice their honest opinions without fear of backlash.
-*   **Dynamic Dropdowns:** Selecting a subject automatically loads the corresponding assigned instructors in real-time via AJAX/Fetch API.
-*   **Premium Interactive Star Rating:** Smooth hover effects, scaling animations, and clear labels (Poor, Fair, Average, Good, Excellent) to represent ratings.
-*   **Review Character Limits:** Textarea with a dynamic, color-changing character counter (limit 300 characters) to keep reviews concise and readable.
+### 👨‍🎓 For Students
+- 100% Anonymous Feedback Submission
+- Dynamic Subject & Teacher Selection
+- Interactive Rating System
+- Anonymous Review Submission
+- Responsive User Experience
 
-### 2. AI Sentiment Analysis Engine
-*   **TextBlob NLP Integration:** Automatically analyzes student review text upon submission to classify it as **positive**, **neutral**, or **negative**.
-*   **Robust Classification Rules:**
-    *   `polarity > 0.1` ➡️ **Positive**
-    *   `polarity < -0.1` ➡️ **Negative**
-    *   Otherwise ➡️ **Neutral**
-*   **Error-Resilient:** Falls back gracefully to neutral on blank comments or exceptions.
+### 🤖 AI Sentiment Analysis
+- TextBlob NLP Integration
+- Automatic Sentiment Classification
+- Positive, Neutral & Negative Detection
+- Real-Time Feedback Processing
+- Future Analytics Support
 
-### 3. For Teachers (My Insights Portal)
-*   **Personal Dashboard:** Detailed visual analytics tailored specifically to the logged-in teacher.
-*   **Aggregate Analytics:** Total feedbacks received and average star rating.
-*   **Visual Sentiment Distribution:** Pie charts or statistics indicating Positive, Neutral, and Negative sentiments.
-*   **Rating Distribution:** Bar charts representing the frequency of ratings (1 to 5 stars).
-*   **Recent Feedbacks:** Access logs of individual feedback statements, comments, dates, ratings, and AI sentiments.
+### 👨‍🏫 For Teachers
+- Personal Dashboard
+- Performance Monitoring
+- Recent Feedback Overview
+- Rating Insights
+- Teaching Improvement Analytics
 
-### 4. For Administrators (Control Panel)
-*   **Global Overview Dashboard:** Overall statistics across all subjects, teachers, and feedbacks.
-*   **Feedback Management:** View all feedback entries in detail, search/filter by teacher, subject, or rating, and delete inappropriate feedback.
-*   **Subject Management (CRUD):** Add new subjects (automatically formats subject codes like `AL 601`), assign multiple teachers to a subject, or delete subjects.
-*   **Teacher Management (CRUD):** Register teachers (automatically formats IDs, generates default password `123456`), assign subjects, promote to Admin, or delete accounts.
-*   **Super-Admin Control (ADM001):** The primary administrator can create new custom admin accounts, promote existing teachers, or demote/remove custom admin privileges.
+### 👨‍💼 For Administrators
+- Complete System Management
+- Teacher Management
+- Subject Management
+- Subject Mapping Management
+- Feedback Monitoring
+- Analytics & Insights
+- Administrator Management
 
-### 5. UI/UX & Security Highlights
-*   **SaaS-Style Desktop Sidebar:** Expandable/collapsible sidebar menu with localStorage memory state preservation.
-*   **Page-load & Reveal Animations:** Subtle fading transitions (Intersection Observer) making the UI feel responsive and alive.
-*   **Input Formatting Rules (JS-enforced):**
-    *   **User IDs / Teacher IDs:** Auto-formats on type to exactly 3 uppercase letters followed by 3 digits (e.g., `ADM001`, `TCH001`).
-    *   **Subject Codes:** Auto-formats on type to 2 uppercase letters, a space, and 3-4 digits (e.g., `AL 601`).
-*   **Cache Control Headers:** Prevents users from accessing cached dashboards via the browser's "Back" button after logging out.
+### 🎨 UI/UX Highlights
+- Modern SaaS Design Language
+- Responsive Dashboard Layouts
+- Professional Sidebar Navigation
+- Premium Card-Based Interface
+- Smooth Animations & Hover Effects
+- Consistent Typography & Spacing
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | HTML5, CSS3, Vanilla JavaScript | Structure, styling, and client-side interactions |
-| **Framework** | Bootstrap 5.3 & custom styling | Responsive layouts, grid system, modal overlays |
-| **Icons** | Font Awesome 6.5.1, Bootstrap Icons, Flaticon UIcons, Lucide Icons | Premium graphics and interface elements |
-| **Backend** | Python 3.x, Flask 3.1.1 | Application framework, routing, and controllers |
-| **Database** | SQLite3 | Local, file-based relational database |
-| **AI/NLP** | TextBlob | Sentiment classification and polarity computation |
+| Layer | Technology |
+|---------|------------|
+| Frontend | HTML5, CSS3, JavaScript |
+| Backend | Python, Flask |
+| Database | SQLite3 |
+| NLP Engine | TextBlob |
+| Icons | Lucide Icons |
+| UI Design | Custom SaaS Design System |
 
 ---
 
@@ -62,194 +66,262 @@ An AI-powered, modern, and anonymous student feedback platform designed for educ
 ```text
 Student Feedback Review System/
 │
-├── app.py                      # Main entrypoint of the application; initializes app, blueprints, & registers error-handlers
-├── database.py                 # SQLite configuration, connection handlers, schema declaration, and auto-seeding
-├── requirements.txt            # Python dependencies (Flask, Werkzeug, textblob)
-├── feedback_system.db          # Auto-generated SQLite Database file
+├── app.py
+├── database.py
+├── requirements.txt
+├── feedback_system.db
 │
-├── routes/                     # Blueprint controllers separating route logic
-│   ├── admin.py                # Admin controls, authentication logic, CRUD routes, and dashboard APIs
-│   ├── feedback.py             # Feedback submission form GET/POST & teacher AJAX fetching API
-│   └── main.py                 # Landing page route
+├── routes/
+│   ├── admin.py
+│   ├── feedback.py
+│   └── main.py
 │
-├── utils/                      # Helper libraries
-│   └── sentiment.py            # AI Sentiment analyzer wrapping TextBlob functions
+├── utils/
+│   └── sentiment.py
 │
-├── static/                     # Static assets
+├── static/
 │   ├── css/
-│   │   └── style.css           # Premium styles, CSS variables, SaaS components, transitions, and media queries
-│   └── js/
-│       └── script.js           # Client validations, user ID formatting, modals, observers, and scroll effects
+│   │   └── style.css
+│   │
+│   ├── js/
+│   │   └── script.js
+│   │
+│   └── images/
 │
-└── templates/                  # Jinja2 HTML templates
-    ├── 404.html                # Custom Page Not Found page
-    ├── 500.html                # Custom Internal Server Error page
-    ├── base.html               # Main layout wrapper containing Navbar, Footer, and Modals
-    ├── index.html              # Modern animated landing page
-    ├── feedback.html           # Student Feedback submission page
+└── templates/
+    ├── 404.html
+    ├── 500.html
+    ├── base.html
+    ├── index.html
+    ├── login.html
+    ├── feedback.html
     │
-    ├── admin/                  # Administrator views
-    │   ├── base.html           # Admin sidebar/header layout with localStorage drawer collapsing logic
-    │   ├── dashboard.html      # Overview analytics, charts (ratings, teachers, sentiment)
-    │   ├── feedbacks.html      # Filterable list of all feedback submissions with delete option
-    │   ├── teachers.html       # Teacher registry table, adding/deleting teachers, toggle admin privilege
-    │   ├── subjects.html       # Subject listing table, adding/deleting subjects, mapping multiple teachers
-    │   ├── admins.html         # Super-admin portal to manage custom admins (restricted to ADM001)
-    │   └── profile.html        # Admin user profile and stats summary
+    ├── admin/
+    │   ├── base.html
+    │   ├── dashboard.html
+    │   ├── analytics.html
+    │   ├── feedbacks.html
+    │   ├── teachers.html
+    │   ├── subjects.html
+    │   ├── mappings.html
+    │   └── admins.html
     │
-    └── teacher/                # Teacher views
-        ├── dashboard.html      # Personal insights analytics, star distributions, sentiment chart logs
-        └── feedbacks.html      # Filtered feedbacks list for courses taught by the teacher
+    └── teacher/
+        ├── dashboard.html
+        └── feedbacks.html
 ```
 
 ---
 
-## 📊 Database Schema Design
+## 📊 Database Schema
 
-The SQLite relational database consists of 5 main tables:
+### Teachers
 
-```mermaid
-erDiagram
-    subjects {
-        text subject_code PK
-        text subject_name
-    }
-    teachers {
-        text user_id PK
-        text name
-        text password
-        text admin
-    }
-    subject_teachers {
-        text subject_code FK
-        text teacher_id FK
-    }
-    feedback {
-        integer id PK
-        text subject FK
-        text teacher FK
-        integer rating_star
-        text feedback_comment
-        text sentiment_analysis
-        text date
-    }
-    system_flags {
-        text flag_name PK
-        text flag_value
-    }
+| Field | Type |
+|---------|---------|
+| user_id | Primary Key |
+| name | Text |
+| password | Text |
+| created_at | Timestamp |
 
-    subjects ||--o{ subject_teachers : "has"
-    teachers ||--o{ subject_teachers : "teaches"
-    subjects ||--o{ feedback : "receives"
-    teachers ||--o{ feedback : "receives"
-```
+### Admins
 
-1.  **`subjects`**: Stores subject-specific unique codes (e.g., `AL 601`) and full names.
-2.  **`teachers`**: Stores teacher profiles, login passwords, and roles (`admin='yes'` / `'no'`).
-3.  **`subject_teachers`**: Many-to-many bridge table mapping which instructor(s) can teach which subject(s). Extends delete operations using `ON DELETE CASCADE`.
-4.  **`feedback`**: Stores individual feedback entries. Integrates foreign key constraints to both `subjects` and `teachers`.
-5.  **`system_flags`**: Simple key-value store to track system preferences (e.g., `db_seeded = 'yes'` to prevent multiple database seeding on restarts).
+| Field | Type |
+|---------|---------|
+| user_id | Primary Key |
+| name | Text |
+| password | Text |
+| role | Text |
+
+### Subjects
+
+| Field | Type |
+|---------|---------|
+| subject_code | Primary Key |
+| subject_name | Text |
+
+### Subject Teachers
+
+| Field | Type |
+|---------|---------|
+| id | Primary Key |
+| subject_code | Foreign Key |
+| teacher_user_id | Foreign Key |
+
+### Feedbacks
+
+| Field | Type |
+|---------|---------|
+| id | Primary Key |
+| subject_code | Foreign Key |
+| teacher_user_id | Foreign Key |
+| teaching_style_rating | Integer |
+| subject_knowledge_rating | Integer |
+| class_environment_rating | Integer |
+| feedback_message | Text |
+| sentiment_label | Text |
+| created_at | Timestamp |
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps to set up and run the project locally on your machine:
+### 1️⃣ Clone the Repository
 
-### 1. Prerequisites
-Ensure you have **Python 3.8+** installed on your system.
+```bash
+git clone <repository-url>
+cd Student-Feedback-Review-System
+```
 
-### 2. Installation Steps
-1.  **Clone / Download the project files** into a workspace folder:
-    ```bash
-    cd "Student Feedback Review System"
-    ```
+### 2️⃣ Create Virtual Environment
 
-2.  **Create and activate a virtual environment** (highly recommended):
-    *   **Windows (PowerShell):**
-        ```powershell
-        python -m venv venv
-        .\venv\Scripts\Activate.ps1
-        ```
-    *   **Mac/Linux:**
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate
-        ```
+```bash
+python -m venv venv
+```
 
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### 3️⃣ Activate Virtual Environment
 
-4.  **Launch the application:**
-    ```bash
-    python app.py
-    ```
-    The console will display:
-    ```text
-    * Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
-    ```
+#### Windows
 
-5.  **Access the application:**
-    Open your browser and navigate to `http://127.0.0.1:5000`
+```bash
+venv\Scripts\activate
+```
 
----
+#### Linux / macOS
 
-## 🔑 Default Seeded Credentials
+```bash
+source venv/bin/activate
+```
 
-When the app is started for the first time, the database `feedback_system.db` is initialized and pre-seeded automatically with the following accounts:
+### 4️⃣ Install Dependencies
 
-### 1. Administrator Account (Super Admin)
-*   **User ID:** `ADM001`
-*   **Password:** `123456`
-*   **Access:** Full Admin Portal, CRUD operations on Subjects & Teachers, Admin privileges control.
+```bash
+pip install -r requirements.txt
+```
 
-### 2. Teacher Accounts (Pre-Seeded)
-You can login to any of these accounts to view the **Teacher Dashboard (Insights & Feedbacks)**:
+### 5️⃣ Run the Application
 
-| User ID | Password | Teacher Name | Assigned Subjects |
-| :--- | :--- | :--- | :--- |
-| `TCH001` | `123456` | Mr. Manoj Kumar | AL 601 (Theory of Computation), AL 602, AL 603 |
-| `TCH002` | `123456` | Mr. Nitesh Gupta | AL 602 (Computer Networks) |
-| `TCH003` | `123456` | Neelam Bisen | AL 603 (Data and Visual Analytics) |
-| `TCH004` | `123456` | Pranjali Pachpor | AL 604 (Cloud Computing) |
+```bash
+python app.py
+```
 
-*Note: You can update the passwords for any of these accounts via the Profile section inside their dashboards.*
+### 6️⃣ Open in Browser
+
+```text
+http://127.0.0.1:5000
+```
 
 ---
 
-## 🗺️ Route Mappings & API Endpoints
+## 🔐 Authentication System
+
+The platform uses secure role-based authentication.
+
+### Administrator Access
+- Manage Teachers
+- Manage Subjects
+- Manage Subject Mappings
+- Manage Admins
+- Review Feedback
+- Access Analytics Dashboard
+
+### Teacher Access
+- View Assigned Subjects
+- Access Feedback Dashboard
+- Monitor Ratings
+- Review Performance Insights
+
+### Student Access
+- Submit Anonymous Feedback
+- Rate Learning Experience
+- Share Suggestions & Reviews
+
+---
+
+## 🗺️ Route Structure
 
 ### Public Routes
-*   `GET /` - Animated Landing page ([index.html](file:///d:/Feedback%20Review%20System%20Project%20Final/Student%20Feedback%20Review%20System/templates/index.html))
-*   `GET /feedback` - Student feedback submission form page ([feedback.html](file:///d:/Feedback%20Review%20System%20Project%20Final/Student%20Feedback%20Review%20System/templates/feedback.html))
-*   `POST /feedback` - Receives feedback inputs, triggers TextBlob sentiment classification, and commits to SQLite. Supports Ajax response formats.
-*   `GET /get-teachers/<subject_id>` - API endpoint queried via AJAX. Resolves and returns instructor mappings for the selected subject dropdown dynamically.
 
-### Authenticated & Shared Routes
-*   `POST /admin/login` - Secure credentials verify endpoint. Establishes session state and returns target dashboard redirects.
-*   `GET /admin/logout` - Terminates the user session and redirects to the landing page.
-*   `GET /admin/profile` - Displays the profile information of the current user, along with teacher analytics if applicable.
-*   `POST /admin/change-password` - Processes password updates (verifies current password, checks new password meets the 6-character minimum, and updates database).
+```text
+/
+/login
+/feedback
+/get-teachers/<subject_code>
+```
 
-### Teacher Routes (Auth Required)
-*   `GET /admin/teacher/dashboard` - Dashboard containing teacher-specific feedback lists, average rating, star breakdown metrics, and sentiment polarity count summary.
-*   `GET /admin/teacher/feedbacks` - Feedback manager for instructors, supporting search/filter by subject and rating values.
+### Teacher Routes
 
-### Admin Routes (Admin Role Required)
-*   `GET /admin/dashboard` - Global metrics dashboard, including global rating trends, sentiment percentages, teacher averages, and global feedback feeds.
-*   `GET /admin/feedbacks` - Listing of all system feedbacks, supporting filtering by subject, teacher name, or rating.
-*   `POST /admin/delete/<feedback_id>` - Deletes a specific feedback entry.
-*   `GET /admin/teachers` - Teacher Management Panel. Shows subject allocations, average rating, and feedback counts.
-*   `POST /admin/teachers/add` - Adds a new teacher registry.
-*   `POST /admin/teachers/delete/<teacher_id>` - Deletes a teacher and cascades feedback/subject assignments.
-*   `POST /admin/teachers/toggle-admin/<teacher_id>` - Promotes or demotes an instructor (Admin control).
-*   `GET /admin/subjects` - Subject Management Panel. Displays teacher-subject maps and feedback counts.
-*   `POST /admin/subjects/add` - Adds a new subject to the database.
-*   `POST /admin/subjects/update_teacher/<subject_id>` - Reallocates multiple instructors to a course.
-*   `POST /admin/subjects/delete/<subject_id>` - Deletes a subject code.
-*   `GET /admin/admins` - Super-admin custom administrator configuration table (restricted to `ADM001`).
-*   `POST /admin/admins/add` - Generates new admin registries.
-*   `POST /admin/admins/promote` - Promotes regular teachers to Admin status.
-*   `POST /admin/admins/delete/<admin_id>` - Removes or demotes custom admins.
+```text
+/teacher/dashboard
+/teacher/feedbacks
+/logout
+```
+
+### Admin Routes
+
+```text
+/admin/dashboard
+/admin/analytics
+/admin/feedbacks
+/admin/teachers
+/admin/subjects
+/admin/mappings
+/admin/admins
+/logout
+```
+
+---
+
+## 🔒 Security Features
+
+- Session-Based Authentication
+- Role-Based Access Control
+- Protected Admin Routes
+- Protected Teacher Routes
+- Secure Logout Handling
+- Parameterized SQLite Queries
+- Anonymous Feedback Collection
+- Input Validation & Sanitization
+- Cache-Control Protection After Logout
+
+---
+
+## 📈 Core Modules
+
+### Student Module
+- Submit Anonymous Feedback
+- Dynamic Teacher Loading
+- Multi-Criteria Rating System
+- Review Submission
+
+### Teacher Module
+- Personal Dashboard
+- Feedback Monitoring
+- Rating Insights
+- Performance Tracking
+
+### Admin Module
+- Dashboard Overview
+- Teacher Management
+- Subject Management
+- Subject Mapping
+- Administrator Management
+- Feedback Monitoring
+- Analytics Dashboard
+
+---
+
+## 🎯 Project Highlights
+
+- Anonymous Student Feedback Collection
+- AI-Powered Sentiment Analysis
+- Role-Based Authentication System
+- Admin & Teacher Dashboards
+- Subject & Faculty Management
+- SQLite Database Integration
+- Flask-Based Backend Architecture
+- Modern SaaS-Inspired User Interface
+- Responsive Design Across Devices
+- Clean Modular Project Structure
+
+---

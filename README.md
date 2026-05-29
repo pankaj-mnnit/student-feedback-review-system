@@ -23,7 +23,6 @@ The backend is built using **Python, Flask, SQLite, and TextBlob**, while the fr
 - Automatic Sentiment Classification
 - Positive, Neutral, and Negative Detection
 - Real-Time Feedback Analysis
-- Graceful Fallback Handling
 
 ### 👨‍🏫 For Teachers
 

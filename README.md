@@ -1,75 +1,39 @@
-# Student Feedback Review System 🎓💬
+# Student Feedback Review System
 
-An AI-powered, modern, and anonymous student feedback platform designed for educational institutions. This system allows students to submit ratings and review comments for their courses and instructors in under a minute, completely anonymously.
+A web-based feedback management system that allows students to submit anonymous feedback for subjects and teachers. The system uses sentiment analysis to classify feedback and provides separate dashboards for teachers and administrators to review insights and manage records.
 
-The backend is built using **Python, Flask, SQLite, and TextBlob**, while the frontend provides a responsive and modern SaaS-style user experience.
+## Features
 
----
+### Student Module
+- Anonymous feedback submission
+- Subject-wise teacher selection
+- Star rating system (1–5)
+- Feedback comments with character limit
 
-## 🌟 Key Features
+### Sentiment Analysis
+- Automatic feedback analysis using TextBlob
+- Classifies reviews as Positive, Neutral, or Negative
 
-### 👨‍🎓 For Students
+### Teacher Module
+- Personal dashboard
+- Average rating and feedback statistics
+- Sentiment overview
+- View received feedback
 
-- 100% Anonymous Feedback Submission
-- No Registration or Login Required
-- Dynamic Subject & Teacher Selection
-- Interactive Star Rating System
-- Real-Time Character Counter
-- Responsive and User-Friendly Interface
+### Admin Module
+- Manage teachers and subjects
+- View and manage feedback records
+- Dashboard with overall statistics
+- Create and manage admin accounts
 
-### 🤖 AI Sentiment Analysis Engine
+## Technology Stack
 
-- TextBlob NLP Integration
-- Automatic Sentiment Classification
-- Positive, Neutral, and Negative Detection
-- Real-Time Feedback Analysis
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap 5
+- **Backend:** Python, Flask
+- **Database:** SQLite
+- **Sentiment Analysis:** TextBlob
 
-### 👨‍🏫 For Teachers
-
-- Dedicated Teacher Dashboard
-- Personal Performance Insights
-- Average Rating Overview
-- Sentiment Distribution Analysis
-- Rating Distribution Statistics
-- Recent Feedback Monitoring
-
-### 👨‍💼 For Administrators
-
-- Global Dashboard Overview
-- Feedback Monitoring & Management
-- Teacher Management (CRUD)
-- Subject Management (CRUD)
-- Subject–Teacher Mapping
-- Admin Management
-- System Analytics & Insights
-
-### 🎨 UI/UX & Security Highlights
-
-- Modern SaaS-Style Interface
-- Responsive Layout Design
-- Interactive Components & Animations
-- Session-Based Authentication
-- Role-Based Access Control
-- Cache-Control Protection
-- Input Validation & Formatting
-- Anonymous Feedback Collection
-
----
-
-## 🛠️ Technology Stack
-
-| Layer | Technology | Purpose |
-|---------|---------|---------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript | User Interface & Interactions |
-| Framework | Flask | Routing & Application Logic |
-| Database | SQLite3 | Data Storage |
-| AI/NLP | TextBlob | Sentiment Analysis |
-| Icons | Lucide Icons, Font Awesome, Bootstrap Icons | UI Components |
-| Styling | Custom SaaS Design System | Modern User Experience |
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```text
 Student Feedback Review System/
@@ -77,7 +41,6 @@ Student Feedback Review System/
 ├── app.py
 ├── database.py
 ├── requirements.txt
-├── feedback_system.db
 │
 ├── routes/
 │   ├── admin.py
@@ -89,122 +52,39 @@ Student Feedback Review System/
 │
 ├── static/
 │   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── script.js
-│   └── images/
+│   └── js/
 │
 └── templates/
-    ├── 404.html
-    ├── 500.html
-    ├── base.html
-    ├── index.html
-    ├── login.html
-    ├── feedback.html
-    │
     ├── admin/
-    │   ├── base.html
-    │   ├── dashboard.html
-    │   ├── analytics.html
-    │   ├── feedbacks.html
-    │   ├── teachers.html
-    │   ├── subjects.html
-    │   ├── mappings.html
-    │   └── admins.html
-    │
     └── teacher/
-        ├── dashboard.html
-        └── feedbacks.html
 ```
 
----
+## Database
 
-## 📊 Database Schema Design
+The system uses SQLite and consists of the following main tables:
 
-The system uses a relational SQLite database consisting of the following tables:
+- Subjects
+- Teachers
+- Subject Teachers
+- Feedback
+- System Flags
 
-### 1. Subjects
+## Installation
 
-Stores subject information.
-
-| Field |
-|---------|
-| subject_code (PK) |
-| subject_name |
-
-### 2. Teachers
-
-Stores teacher account information.
-
-| Field |
-|---------|
-| user_id (PK) |
-| name |
-| password |
-| created_at |
-
-### 3. Admins
-
-Stores administrator account information.
-
-| Field |
-|---------|
-| user_id (PK) |
-| name |
-| password |
-| role |
-
-### 4. Subject Teachers
-
-Maps teachers to subjects.
-
-| Field |
-|---------|
-| id (PK) |
-| subject_code (FK) |
-| teacher_user_id (FK) |
-
-### 5. Feedbacks
-
-Stores anonymous student feedback.
-
-| Field |
-|---------|
-| id (PK) |
-| subject_code (FK) |
-| teacher_user_id (FK) |
-| teaching_style_rating |
-| subject_knowledge_rating |
-| class_environment_rating |
-| feedback_message |
-| sentiment_label |
-| created_at |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.8 or above
-- pip package manager
-
-### Installation
-
-#### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone <repository-url>
-cd Student-Feedback-Review-System
+cd "Student Feedback Review System"
 ```
 
-#### 2. Create a Virtual Environment
+### Create Virtual Environment
 
 ```bash
 python -m venv venv
 ```
 
-#### 3. Activate the Environment
+### Activate Virtual Environment
 
 **Windows**
 
@@ -218,142 +98,47 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-#### 4. Install Dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-#### 5. Run the Application
+### Run the Application
 
 ```bash
 python app.py
 ```
 
-#### 6. Open in Browser
+Open your browser and visit:
 
 ```text
 http://127.0.0.1:5000
 ```
 
----
+## Default Login Credentials
 
-## 🔑 Default Credentials
-
-### Administrator Accounts
-
-| User ID | Role |
-|---------|---------|
-| A001 | Principal |
-| A002 | HOD |
-| A003 | TG |
-
-### Teacher Accounts
-
-| User ID | Teacher Name |
-|---------|---------|
-| T001 | Dr. Ramesh Sharma |
-| T002 | Prof. Sunita Iyer |
-| T003 | Dr. Arvind Kulkarni |
-| T004 | Prof. Meena Nair |
-| T005 | Dr. Suresh Pandey |
-| T006 | Prof. Kavita Desai |
-| T007 | Dr. Rajiv Bhatia |
-| T008 | Dr. Neha Verma |
-
----
-
-## 🗺️ Route Structure
-
-### Public Routes
+### Admin
 
 ```text
-/
-/login
-/feedback
-/get-teachers/<subject_code>
+User ID: ADM001
+Password: 123456
 ```
 
-### Teacher Routes
+### Teacher
 
 ```text
-/teacher/dashboard
-/teacher/feedbacks
-/logout
+User ID: TCH001
+Password: 123456
 ```
 
-### Admin Routes
+## Future Enhancements
 
-```text
-/admin/dashboard
-/admin/analytics
-/admin/feedbacks
-/admin/teachers
-/admin/subjects
-/admin/mappings
-/admin/admins
-/logout
-```
+- Advanced analytics dashboard
+- Feedback report export
+- Email notifications
+- Enhanced sentiment analysis
 
----
+## License
 
-## 🔒 Security Features
-
-- Session-Based Authentication
-- Role-Based Access Control
-- Protected Admin Routes
-- Protected Teacher Routes
-- Secure Logout Handling
-- Cache-Control Protection
-- Parameterized SQLite Queries
-- Anonymous Feedback Collection
-- Input Validation & Sanitization
-
----
-
-## 📈 Core Modules
-
-### Student Module
-
-- Anonymous Feedback Submission
-- Subject & Teacher Selection
-- Multi-Criteria Rating System
-- Sentiment-Based Review Processing
-
-### Teacher Module
-
-- Personal Dashboard
-- Performance Monitoring
-- Rating Analysis
-- Feedback Insights
-
-### Admin Module
-
-- Dashboard Overview
-- Teacher Management
-- Subject Management
-- Subject Mapping
-- Feedback Monitoring
-- Analytics Dashboard
-- Administrator Management
-
----
-
-## 🎯 Project Highlights
-
-- Anonymous Student Feedback Collection
-- AI-Powered Sentiment Analysis
-- Admin & Teacher Dashboards
-- Subject & Teacher Management
-- SQLite Database Integration
-- Flask-Based Backend Architecture
-- Responsive SaaS-Style User Interface
-- Role-Based Authentication System
-- Modern Analytics Dashboard
-- Clean Modular Project Structure
-
----
-
-## 📄 License
-
-This project was developed for educational and academic purposes. It demonstrates web application development, database design, authentication systems, feedback analytics, and modern SaaS-style dashboard implementation using Flask and SQLite.
+This project was developed as a minor academic project for educational purposes.
